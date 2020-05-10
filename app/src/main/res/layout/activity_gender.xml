@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="15dp"
+    android:background="#F5F5F5"
+    android:orientation="vertical"
+    tools:context=".GenderActivity">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingHorizontal="25dp"
+            android:layout_gravity="center_vertical"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="I am a"
+                android:fontFamily="sans-serif"
+                android:textSize="50dp"
+                android:layout_marginBottom="100dp"
+                />
+
+            <RadioGroup
+                android:id="@+id/gender_choice_radio_group"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <RadioButton
+                    android:id="@+id/woman"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingVertical="10dp"
+                    android:text="Woman"
+                    android:textSize="25sp"
+                    android:background="@drawable/gender_button_choice"
+                    android:button="@null"
+                    android:gravity="center_horizontal" />
+
+                <RadioButton
+                    android:id="@+id/man"
+                    android:layout_marginTop="25dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingVertical="10dp"
+                    android:text="Man"
+                    android:textSize="25sp"
+                    android:background="@drawable/gender_button_choice"
+                    android:button="@null"
+                    android:gravity="center_horizontal"
+                    />
+            </RadioGroup>
+
+            <Button
+                android:id="@+id/btn_continue"
+                android:layout_marginTop="100dp"
+                android:text="CONTINUE"
+                android:enabled="false"
+                android:background="@drawable/disabled_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+
+        </LinearLayout>
+
+    </ScrollView>
+</LinearLayout>
