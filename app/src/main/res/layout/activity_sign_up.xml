@@ -71,7 +71,7 @@
                     android:layout_width="25dp"
                     android:layout_height="25dp"
                     android:layout_gravity="center_vertical"
-                    android:src="@drawable/fb_logo"/>
+                    android:src="@drawable/com_facebook_button_icon"/>
 
                 <TextView
                     android:layout_marginLeft="25dp"
@@ -105,30 +105,6 @@
                     android:textAlignment="center"
                     android:textColor="#FFFFFF"
                     android:text="LOG IN WITH GOOGLE"/>
-            </LinearLayout>
-            <LinearLayout
-                android:clickable="true"
-                android:layout_marginTop="20dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingVertical="10dp"
-                android:paddingHorizontal="25dp"
-                android:background="@drawable/button_design_bg"
-                >
-                <ImageView
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:layout_gravity="center_vertical"
-                    android:src="@drawable/ic_perm_phone_msg"/>
-                <TextView
-                    android:layout_marginLeft="25dp"
-                    android:layout_gravity="center_vertical|center_horizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textAlignment="center"
-                    android:textColor="#FFFFFF"
-                    android:text="LOG IN WITH PHONE NUMBER"/>
             </LinearLayout>
             <LinearLayout
                 android:layout_gravity="center_horizontal"
