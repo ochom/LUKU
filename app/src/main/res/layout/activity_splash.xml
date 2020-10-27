@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F5F5F5"
+    android:background="@drawable/wave"
     tools:context=".Splash">
 
     <LinearLayout
@@ -15,10 +15,21 @@
 
         <ImageView
             android:layout_gravity="center_horizontal"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:src="@mipmap/ic_launcher"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/logo"
             />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:fontFamily="cursive"
+            android:text="Luku"
+            android:textColor="#019207"
+            android:textSize="30sp"
+            android:textStyle="bold" />
 
     </LinearLayout>
 
