@@ -7,8 +7,8 @@
     android:padding="15dp"
     android:background="@drawable/wave"
     android:orientation="vertical"
-    tools:context=".GenderActivity">
 
+    tools:context=".GenderActivity">
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -21,50 +21,52 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="I am a"
+                android:text="Profile picture"
                 android:fontFamily="sans-serif"
                 android:textSize="25sp"
                 />
+            <RelativeLayout
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_gravity="center">
 
-            <RadioGroup
-                android:id="@+id/gender_choice_radio_group"
-                android:layout_width="match_parent"
-                android:layout_marginTop="20dp"
-                android:layout_height="wrap_content">
-                <RadioButton
-                    android:id="@+id/woman"
+                <de.hdodenhof.circleimageview.CircleImageView
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingVertical="10dp"
-                    android:text="Woman"
-                    android:textSize="25sp"
-                    android:background="@drawable/gender_button_choice"
-                    android:button="@null"
-                    android:gravity="center_horizontal" />
-
-                <RadioButton
-                    android:id="@+id/man"
+                    android:layout_height="match_parent"
                     android:layout_marginTop="20dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingVertical="10dp"
-                    android:text="Man"
-                    android:textSize="25sp"
-                    android:background="@drawable/gender_button_choice"
-                    android:button="@null"
-                    android:gravity="center_horizontal"
+                    app:civ_border_color="@color/colorPrimary"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_baseline_account_circle_24"
                     />
-            </RadioGroup>
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:src="@drawable/ic_baseline_add_photo_alternate_24"/>
+
+            </RelativeLayout>
+
+            <EditText
+                android:layout_marginTop="20dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Name"
+                android:textSize="25sp"
+                android:gravity="center_horizontal"
+                android:paddingVertical="10dp"/>
 
             <Button
                 android:id="@+id/btn_continue"
                 android:layout_marginTop="50dp"
-                android:text="CONTINUE"
+                android:text="FINISH"
                 android:enabled="false"
                 android:background="@drawable/disabled_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
-
 
         </LinearLayout>
 

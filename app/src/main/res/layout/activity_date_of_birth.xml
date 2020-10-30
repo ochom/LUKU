@@ -7,8 +7,8 @@
     android:padding="15dp"
     android:background="@drawable/wave"
     android:orientation="vertical"
-    tools:context=".GenderActivity">
 
+    tools:context=".GenderActivity">
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -21,40 +21,18 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="I am a"
+                android:text="Date of birth"
                 android:fontFamily="sans-serif"
                 android:textSize="25sp"
                 />
 
-            <RadioGroup
-                android:id="@+id/gender_choice_radio_group"
+            <DatePicker
+                android:id="@+id/datePicker"
                 android:layout_width="match_parent"
-                android:layout_marginTop="20dp"
-                android:layout_height="wrap_content">
-                <RadioButton
-                    android:id="@+id/woman"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingVertical="10dp"
-                    android:text="Woman"
-                    android:textSize="25sp"
-                    android:background="@drawable/gender_button_choice"
-                    android:button="@null"
-                    android:gravity="center_horizontal" />
-
-                <RadioButton
-                    android:id="@+id/man"
-                    android:layout_marginTop="20dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingVertical="10dp"
-                    android:text="Man"
-                    android:textSize="25sp"
-                    android:background="@drawable/gender_button_choice"
-                    android:button="@null"
-                    android:gravity="center_horizontal"
-                    />
-            </RadioGroup>
+                android:layout_height="wrap_content"
+                android:calendarViewShown="false"
+                android:spinnersShown="true"
+                android:datePickerMode="spinner"/>
 
             <Button
                 android:id="@+id/btn_continue"
@@ -64,7 +42,6 @@
                 android:background="@drawable/disabled_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
-
 
         </LinearLayout>
 

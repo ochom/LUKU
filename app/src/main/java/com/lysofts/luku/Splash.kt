@@ -26,8 +26,7 @@ class Splash : AppCompatActivity() {
                     finish()
                 }
             } else {
-                val intent = Intent(this@Splash, SignUp::class.java)
-                startActivity(intent)
+                startActivity(Intent(this@Splash, SignIn::class.java))
                 finish()
             }
         }, 3000)
@@ -36,7 +35,7 @@ class Splash : AppCompatActivity() {
     val isLoggedIn: Boolean
         get() {
             val accessToken = AccessToken.getCurrentAccessToken()
-            return accessToken != null
+            return true;// accessToken != null
         }
 
     fun isLocationEnable(context: Context): Boolean {

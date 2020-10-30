@@ -6,6 +6,6 @@
         android:radius="25dp"
         />
     <stroke android:width="3dp" android:color="#ccc"/>
-    <solid android:color="@color/ic_launcher_background"
+    <solid android:color="#ffffff"
         />
 </shape>

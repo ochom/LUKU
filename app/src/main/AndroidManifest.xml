@@ -16,6 +16,8 @@
         <activity android:name=".UserProfile"></activity>
         <activity android:name=".LocationActivity" />
         <activity android:name=".SignUp" />
+        <activity android:name=".Settings"/>
+        <activity android:name=".SignIn" />
         <activity android:name=".MainActivity" />
         <activity android:name=".GenderActivity" />
         <activity android:name=".Splash">

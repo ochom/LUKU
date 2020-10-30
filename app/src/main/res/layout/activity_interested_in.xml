@@ -7,8 +7,8 @@
     android:padding="15dp"
     android:background="@drawable/wave"
     android:orientation="vertical"
-    tools:context=".GenderActivity">
 
+    tools:context=".GenderActivity">
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -21,7 +21,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="I am a"
+                android:text="I am interested in"
                 android:fontFamily="sans-serif"
                 android:textSize="25sp"
                 />
@@ -36,19 +36,31 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingVertical="10dp"
-                    android:text="Woman"
+                    android:text="Women"
                     android:textSize="25sp"
                     android:background="@drawable/gender_button_choice"
                     android:button="@null"
                     android:gravity="center_horizontal" />
 
                 <RadioButton
-                    android:id="@+id/man"
+                    android:id="@+id/men"
                     android:layout_marginTop="20dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingVertical="10dp"
                     android:text="Man"
+                    android:textSize="25sp"
+                    android:background="@drawable/gender_button_choice"
+                    android:button="@null"
+                    android:gravity="center_horizontal"/>
+
+                <RadioButton
+                    android:id="@+id/any"
+                    android:layout_marginTop="20dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingVertical="10dp"
+                    android:text="Any"
                     android:textSize="25sp"
                     android:background="@drawable/gender_button_choice"
                     android:button="@null"
@@ -64,7 +76,6 @@
                 android:background="@drawable/disabled_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
-
 
         </LinearLayout>
 

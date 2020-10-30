@@ -28,7 +28,7 @@
         android:paddingBottom="20dp">
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:paddingVertical="50dp"
             android:background="@drawable/rounded_white"
             android:gravity="center">
@@ -37,30 +37,13 @@
                 android:layout_height="wrap_content"
                 android:paddingHorizontal="20dp"
                 android:paddingVertical="10dp">
-                <Button
-                    android:id="@+id/btn_as_guest"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="#019207"
-                    android:background="@drawable/button_outline"
-                    android:text="Continue as guest"/>
-
-                <TextView
-                    android:id="@+id/txt_or"
-                    android:layout_below="@id/btn_as_guest"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="15dp"
-                    android:text="OR"/>
-
                 <EditText
                     android:id="@+id/et_email"
-                    android:layout_below="@id/txt_or"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="15dp"
                     android:paddingHorizontal="20dp"
+                    android:inputType="textEmailAddress"
                     android:paddingVertical="10dp"
                     android:background="@drawable/text_input_background"
                     android:hint="Email Address"/>
@@ -73,6 +56,7 @@
                     android:layout_marginTop="15dp"
                     android:paddingHorizontal="20dp"
                     android:paddingVertical="10dp"
+                    android:inputType="textPassword"
                     android:background="@drawable/text_input_background"
                     android:hint="Password"/>
 
@@ -81,7 +65,7 @@
                     android:layout_below="@id/et_password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="30dp"
                     android:paddingHorizontal="20dp"
                     android:paddingVertical="10dp"
                     android:background="@drawable/button_solid"
@@ -90,7 +74,7 @@
 
                 <RelativeLayout
                     android:id="@+id/view_links"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="20dp"
                     android:layout_below="@id/btn_sign_in"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
@@ -100,29 +84,12 @@
                         android:fontFamily="cursive"
                         android:textColor="#000"
                         android:text="Forgot password?"/>
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_alignParentRight="true" >
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="cursive"
-                            android:text="Don't have an account?"/>
-                        <TextView
-                            android:layout_marginLeft="10dp"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textColor="#019207"
-                            android:fontFamily="cursive"
-                            android:text="Sign up"/>
-                    </LinearLayout>
                 </RelativeLayout>
 
 
 
                 <LinearLayout
+                    android:id="@+id/social_links"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/view_links"

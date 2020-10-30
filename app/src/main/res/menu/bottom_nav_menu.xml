@@ -7,18 +7,23 @@
         android:icon="@drawable/ic_baseline_dashboard_24"
         app:showAsAction="always"/>
 
-    <item android:id="@+id/nav_favorites"
-        android:title="Filter"
+    <item android:id="@+id/nav_matches"
+        android:title="Matches"
         android:icon="@drawable/ic_baseline_favorite_24"
         app:showAsAction="always"/>
 
-    <item android:id="@+id/nav_search"
-        android:title="Search"
+    <item android:id="@+id/nav_chats"
+        android:title="Chats"
         android:icon="@drawable/chart_icon"
         app:showAsAction="always"/>
 
-    <item android:id="@+id/nav_cart"
-        android:title="Cart"
+    <item android:id="@+id/nav_profile"
+        android:title="Profile"
         android:icon="@drawable/ic_baseline_account_box_24"
+        app:showAsAction="always"/>
+
+    <item android:id="@+id/nav_more"
+        android:title="More"
+        android:icon="@drawable/ic_baseline_more_horiz_24"
         app:showAsAction="always"/>
 </menu>
