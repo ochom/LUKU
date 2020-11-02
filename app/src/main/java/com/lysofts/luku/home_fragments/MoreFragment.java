@@ -1,4 +1,4 @@
-package com.lysofts.luku.fragments;
+package com.lysofts.luku.home_fragments;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

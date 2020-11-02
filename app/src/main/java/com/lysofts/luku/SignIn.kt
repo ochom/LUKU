@@ -9,7 +9,7 @@ class SignIn: AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_signin)
+        setContentView(R.layout.fragment_signin)
     }
 
     fun signUp(view: View) {

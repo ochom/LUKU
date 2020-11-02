@@ -1,5 +1,6 @@
 package com.lysofts.luku;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 
@@ -9,18 +10,21 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.lysofts.luku.fragments.ChatsFragment;
-import com.lysofts.luku.fragments.HomeFragment;
-import com.lysofts.luku.fragments.MatchesFragment;
-import com.lysofts.luku.fragments.MoreFragment;
-import com.lysofts.luku.fragments.ProfileFragment;
+import com.google.firebase.auth.FirebaseAuth;
+import com.lysofts.luku.home_fragments.ChatsFragment;
+import com.lysofts.luku.home_fragments.HomeFragment;
+import com.lysofts.luku.home_fragments.MatchesFragment;
+import com.lysofts.luku.home_fragments.MoreFragment;
+import com.lysofts.luku.home_fragments.ProfileFragment;
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener{
+    FirebaseAuth mAuth;
     BottomNavigationView bottomNavigationView;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mAuth = FirebaseAuth.getInstance();
 
         loadFragment(new HomeFragment());
 
@@ -35,8 +39,8 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             getSupportFragmentManager()
                     .beginTransaction()
                     .setCustomAnimations(
-                            R.anim.fade_in,
-                            R.anim.slide_out
+                            R.anim.slide_in,
+                            R.anim.fade_out
                     )
                     .replace(R.id.fragment_container, (Fragment) fragment)
                     .commit();
@@ -66,5 +70,12 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 break;
         }
         return loadFragment(fragment);
+    }
+
+
+    public void signOut() {
+        mAuth.signOut();
+        startActivity(new Intent(MainActivity.this, Splash.class));
+        finish();
     }
 }

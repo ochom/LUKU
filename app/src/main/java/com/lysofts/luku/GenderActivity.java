@@ -15,7 +15,7 @@ public class GenderActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_gender);
+        setContentView(R.layout.fragment_gender);
 
         buttonContinue = findViewById(R.id.btn_continue);
         radioGroup = findViewById(R.id.gender_choice_radio_group);
