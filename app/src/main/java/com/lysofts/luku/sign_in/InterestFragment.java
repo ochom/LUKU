@@ -1,4 +1,4 @@
-package com.lysofts.luku.signin_fragments;
+package com.lysofts.luku.sign_in;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -15,16 +15,17 @@ import androidx.fragment.app.Fragment;
 import com.lysofts.luku.R;
 import com.lysofts.luku.SignUp;
 
-public class GenderFragment extends Fragment {
+public class InterestFragment extends Fragment {
     Button btnContinue;
     RadioGroup radioGroup;
     RadioButton checkedButton;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_gender, container, false);
-        btnContinue = v.findViewById(R.id.btn_continue);
+        View v = inflater.inflate(R.layout.fragment_interested_in, container, false);btnContinue = v.findViewById(R.id.btn_continue);
         radioGroup = v.findViewById(R.id.gender_choice_radio_group);
+        //checkedButton = v.findViewById(radioGroup.getCheckedRadioButtonId());
         return v;
     }
 
@@ -34,17 +35,20 @@ public class GenderFragment extends Fragment {
         btnContinue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String sex = "";
+                String interestedIn = "";
                 int id = radioGroup.getCheckedRadioButtonId();
                 switch (id){
-                    case  R.id.woman:
-                        sex = "woman";
+                    case  R.id.women:
+                        interestedIn = "women";
+                        break;
+                    case  R.id.men:
+                        interestedIn = "men";
                         break;
                     default:
-                        sex = "man";
+                        interestedIn = "any";
                         break;
                 }
-                ((SignUp) getActivity()).setSex(sex);
+                ((SignUp) getActivity()).setInterestedIn(interestedIn);
             }
         });
 

@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,19 +19,19 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.lysofts.luku.chat_app.ChatActivity;
+import com.lysofts.luku.local.MyProfile;
+import com.lysofts.luku.models.UserProfile;
 
 public class Splash extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private DatabaseReference databaseReference;
-
-    int STORAGE_PERM = 0, LOCATION_PERM=1;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
         mAuth = FirebaseAuth.getInstance();
-        databaseReference = FirebaseDatabase.getInstance().getReference().child("users");
+        databaseReference = FirebaseDatabase.getInstance().getReference();
 
         checkPermissions();
     }
@@ -72,24 +73,34 @@ public class Splash extends AppCompatActivity {
     }
 
     private void initializeAuth() {
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if (currentUser != null){
-            checkProfile(mAuth.getCurrentUser());
-        }else{
-            Intent intent = new Intent(Splash.this, SignUp.class);
-            intent.putExtra("state","register_user");
-            startActivity(intent);
+        UserProfile user = new MyProfile(this).getProfile();
+        if (user != null){ //local profile exists
+            startActivity(new Intent(Splash.this, MainActivity.class));
             finish();
+        }else{ //local profile does not exist
+            FirebaseUser currentUser = mAuth.getCurrentUser();
+            if (currentUser != null){
+                checkProfile(mAuth.getCurrentUser());
+            }else{
+                Intent intent = new Intent(Splash.this, SignUp.class);
+                intent.putExtra("state","register_user");
+                startActivity(intent);
+                finish();
+            }
+
         }
     }
 
 
     private void checkProfile(final FirebaseUser currentUser){
-        databaseReference.child("users").child(currentUser.getUid());
-        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+        databaseReference.child("users")
+                .child(currentUser.getUid())
+                .addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(snapshot.hasChild(currentUser.getUid())){
+                if(snapshot.exists()){
+                    UserProfile userProfile = snapshot.getValue(UserProfile.class);
+                    new MyProfile(Splash.this).setProfile(userProfile);
                     startActivity(new Intent(Splash.this, MainActivity.class));
                 }else{
                     Intent intent = new Intent(Splash.this, SignUp.class);

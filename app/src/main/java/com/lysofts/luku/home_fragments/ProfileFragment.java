@@ -43,6 +43,7 @@ import com.lysofts.luku.MainActivity;
 import com.lysofts.luku.PhotoviewerActivity;
 import com.lysofts.luku.R;
 import com.lysofts.luku.SignUp;
+import com.lysofts.luku.local.MyProfile;
 import com.lysofts.luku.models.Upload;
 import com.lysofts.luku.models.UserProfile;
 import com.squareup.picasso.Picasso;
@@ -52,8 +53,10 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -65,10 +68,11 @@ public class ProfileFragment extends Fragment{
     DatabaseReference databaseReference;
     StorageReference storageReference;
     UserProfile userProfile;
+    List<Upload> uploadList = new ArrayList<>();
 
     CircleImageView profilePic;
     ImageView editProfilePic;
-    TextView name1, email1, name2, email2, phone, dob, interestedIn;
+    TextView name1, title, name2, email, phone, dob, interestedIn;
     LinearLayout uploadsLayout;
     ProgressBar progressBar;
     LinearLayout profileLayout;
@@ -86,10 +90,10 @@ public class ProfileFragment extends Fragment{
         profilePic = v.findViewById(R.id.profile_pic);
         editProfilePic = v.findViewById(R.id.edit_profile_pic);
         name1 = v.findViewById(R.id.tvName1);
-        email1 = v.findViewById(R.id.tvEmail1);
+        title = v.findViewById(R.id.tvTitle);
         uploadsLayout = v.findViewById(R.id.uploadsLayout);
         name2 = v.findViewById(R.id.tvName2);
-        email2 = v.findViewById(R.id.tvEmail2);
+        email = v.findViewById(R.id.tvEmail);
         phone = v.findViewById(R.id.tvPhone);
         dob = v.findViewById(R.id.tvDOB);
         interestedIn = v.findViewById(R.id.tvInterestedIn);
@@ -100,10 +104,14 @@ public class ProfileFragment extends Fragment{
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        userProfile = new MyProfile(getActivity()).getProfile();
+        updateUI();
+
         mAuth = FirebaseAuth.getInstance();
-        databaseReference = FirebaseDatabase.getInstance().getReference().child("users");
+        databaseReference = FirebaseDatabase.getInstance().getReference();
         storageReference = FirebaseStorage.getInstance().getReference();
-        loadUser();
+
+        loadUploads();
         btnSignOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -111,12 +119,14 @@ public class ProfileFragment extends Fragment{
             }
         });
     }
-    private void loadUser() {
-        databaseReference.child(mAuth.getUid()).addValueEventListener(new ValueEventListener() {
+    private void loadUploads() {
+        databaseReference.child("users").child(mAuth.getUid()).child("uploads").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                userProfile = snapshot.getValue(UserProfile.class);
-                updateUI();
+                for (DataSnapshot snapshot1: snapshot.getChildren()){
+                    Upload upload = snapshot1.getValue(Upload.class);
+                    uploadList.add(upload);
+                }
                 manageUploads();
                 progressBar.setVisibility(View.GONE);
                 profileLayout.setVisibility(View.VISIBLE);
@@ -131,9 +141,9 @@ public class ProfileFragment extends Fragment{
     private void updateUI() {
         Picasso.get().load(userProfile.getImage()).into(profilePic);
         name1.setText(userProfile.getName());
-        email1.setText(userProfile.getEmail());
+        title.setText(userProfile.getTitle());
         name2.setText(userProfile.getName());
-        email2.setText(userProfile.getEmail());
+        email.setText(userProfile.getEmail());
         phone.setText(userProfile.getPhone());
         dob.setText(userProfile.getBirthday());
         interestedIn.setText(userProfile.getInterestedIn());
@@ -145,7 +155,6 @@ public class ProfileFragment extends Fragment{
                 selectProfileImage();
             }
         });
-
         btnAddPic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -163,17 +172,16 @@ public class ProfileFragment extends Fragment{
 
     private void manageUploads() {
         uploadsLayout.removeAllViews();
-        LayoutInflater inf = LayoutInflater.from(getContext());
-        View child;
-        Map<String, Upload> uploads = userProfile.getUploads();
-        if (uploads != null && userProfile.getUploads().size()>=3){
-            btnAddPic.setVisibility(View.GONE);
-        }else{
-            btnAddPic.setVisibility(View.VISIBLE);
-        }
-        if(uploads != null){
-            for(Map.Entry<String, Upload> entry: uploads.entrySet()){
-                Upload upload = entry.getValue();
+        if(getActivity()!=null){
+            LayoutInflater inf = LayoutInflater.from(getActivity());
+            View child;
+            if (uploadList != null && uploadList.size()>=3){
+                btnAddPic.setVisibility(View.GONE);
+            }else{
+                btnAddPic.setVisibility(View.VISIBLE);
+            }
+
+            for (Upload upload:uploadList){
                 child = inf.inflate(R.layout.profile_upload_design, null);
                 ImageView imageView = child.findViewById(R.id.upload_pic);
                 imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
@@ -225,12 +233,12 @@ public class ProfileFragment extends Fragment{
     }
 
     private void deleteImage() {
-        databaseReference.child(mAuth.getUid()).child("uploads").child(clickedImage).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+        databaseReference.child("users").child(mAuth.getUid()).child("uploads").child(clickedImage).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()){
                     Log.d("DELETED:::DB", clickedImage);
-                    storageReference.child(clickedImage+".jpg").delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                    storageReference.child("uploads").child(clickedImage+".jpg").delete().addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()){
@@ -323,7 +331,7 @@ public class ProfileFragment extends Fragment{
     }
 
     private void updateProfile(String image) {
-        databaseReference.child(mAuth.getUid()).child("image").setValue(image);
+        databaseReference.child("users").child(mAuth.getUid()).child("image").setValue(image);
     }
 
     private void uploadImage(Uri imageUri) {
@@ -376,7 +384,7 @@ public class ProfileFragment extends Fragment{
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MMddYYYY");
         String currentDate = simpleDateFormat.format(calendar.getTime());
 
-        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ssa");
+        SimpleDateFormat timeFormat = new SimpleDateFormat("HHmmssa");
         String currentTime = timeFormat.format(calendar.getTime());
         return mAuth.getUid()+currentDate+currentTime;
     }
@@ -386,11 +394,6 @@ public class ProfileFragment extends Fragment{
         data.put("id", id);
         data.put("image", image);
         data.put("claps", 0);
-        databaseReference.child(mAuth.getUid()).child("uploads").child(id).updateChildren(data).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                //manageUploads();
-            }
-        });
+        databaseReference.child("users").child(mAuth.getUid()).child("uploads").child(id).updateChildren(data);
     }
 }

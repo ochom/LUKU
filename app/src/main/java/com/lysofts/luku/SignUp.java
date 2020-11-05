@@ -39,14 +39,18 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.auth.User;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.lysofts.luku.signin_fragments.AddPicFragment;
-import com.lysofts.luku.signin_fragments.DoBFragment;
-import com.lysofts.luku.signin_fragments.GenderFragment;
-import com.lysofts.luku.signin_fragments.InterestFragment;
-import com.lysofts.luku.signin_fragments.SignInFragment;
+import com.lysofts.luku.local.MyProfile;
+import com.lysofts.luku.models.UserProfile;
+import com.lysofts.luku.sign_in.AddPicFragment;
+import com.lysofts.luku.sign_in.DoBFragment;
+import com.lysofts.luku.sign_in.GenderFragment;
+import com.lysofts.luku.sign_in.InterestFragment;
+import com.lysofts.luku.sign_in.ProfessionFragment;
+import com.lysofts.luku.sign_in.SignInFragment;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -62,7 +66,7 @@ public class SignUp extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private StorageReference storageReference;
     private DatabaseReference databaseReference;
-    String name,birthday,sex, interestedIn, phone, image;
+    String name, profession, title, birthday,sex, interestedIn, phone, image;
     Uri imageUri;
 
 
@@ -84,8 +88,8 @@ public class SignUp extends AppCompatActivity {
         }
 
         mAuth = FirebaseAuth.getInstance();
-        databaseReference = FirebaseDatabase.getInstance().getReference().child("users");
-        storageReference = FirebaseStorage.getInstance().getReference().child("profiles");
+        databaseReference = FirebaseDatabase.getInstance().getReference();
+        storageReference = FirebaseStorage.getInstance().getReference();
         progressDialog = new ProgressDialog(this);
 
         FacebookLogin();
@@ -183,17 +187,7 @@ public class SignUp extends AppCompatActivity {
         LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile","email","user_birthday", "user_friends"));
     }
 
-    public void signIn(View view)  {
-        finish();
-    }
-
-    public void signUp() {
-        startActivity(new Intent(SignUp.this, MainActivity.class));
-        finish();
-    }
-
     public void signInOrRegister(final String email, final String password) {
-
         if(TextUtils.isEmpty(email)){
             Toast.makeText(this, "Please write you email", Toast.LENGTH_SHORT).show();
         }else if(TextUtils.isEmpty(password)){
@@ -222,22 +216,26 @@ public class SignUp extends AppCompatActivity {
     }
 
     private void checkProfile(final FirebaseUser user) {
-        databaseReference.child("users");
-        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(snapshot.hasChild(user.getUid())){
-                    startActivity(new Intent(SignUp.this, MainActivity.class));
-                    finish();
-                }else{
-                    loadFragment(new GenderFragment());
+        databaseReference.child("users")
+            .child(user.getUid())
+            .addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if(snapshot.exists()){
+                        UserProfile userProfile = snapshot.getValue(UserProfile.class);
+                        new MyProfile(SignUp.this).setProfile(userProfile);
+                        startActivity(new Intent(SignUp.this, MainActivity.class));
+                        finish();
+                    }else{
+                        loadFragment(new GenderFragment());
+                    }
                 }
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-            }
-        });
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
     }
 
 
@@ -257,18 +255,24 @@ public class SignUp extends AppCompatActivity {
                 });
     }
 
-    public void setInterestedIn(String interestedIn) {
-        this.interestedIn = interestedIn;
-        loadFragment(new DoBFragment());
-    }
-
     public void setSex(String sex) {
         this.sex = sex;
         loadFragment(new InterestFragment());
     }
 
+    public void setInterestedIn(String interestedIn) {
+        this.interestedIn = interestedIn;
+        loadFragment(new DoBFragment());
+    }
+
     public void setDateOfBirth(String dateOfBirth) {
         this.birthday = dateOfBirth;
+        loadFragment(new ProfessionFragment());
+    }
+
+    public void setProfession(String profession, String title) {
+        this.profession=profession;
+        this.title = title;
         loadFragment(new AddPicFragment());
     }
 
@@ -291,7 +295,7 @@ public class SignUp extends AppCompatActivity {
     }
 
     private void uploadImage() {
-        final StorageReference filePath = storageReference.child(mAuth.getUid()+".jpg");
+        final StorageReference filePath = storageReference.child("profiles").child(mAuth.getUid()+".jpg");
         Bitmap bmp = null;
         try {
             bmp = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
@@ -342,7 +346,10 @@ public class SignUp extends AppCompatActivity {
 
     private void createProfile() {
         Map<String, Object> data = new HashMap<>();
+        data.put("id", mAuth.getUid());
         data.put("name", name);
+        data.put("title", title);
+        data.put("profession", profession);
         data.put("email", mAuth.getCurrentUser().getEmail());
         data.put("sex", sex);
         data.put("interestedIn", interestedIn);
@@ -350,10 +357,22 @@ public class SignUp extends AppCompatActivity {
         data.put("phone", phone);
         data.put("image", image);
 
-        databaseReference.child(mAuth.getUid()).updateChildren(data).addOnCompleteListener(new OnCompleteListener<Void>() {
+        databaseReference.child("users").child(mAuth.getUid()).updateChildren(data).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()){
+                    UserProfile userProfile = new UserProfile();
+                    userProfile.setId(mAuth.getUid());
+                    userProfile.setName(name);
+                    userProfile.setTitle(title);
+                    userProfile.setProfession(profession);
+                    userProfile.setEmail( mAuth.getCurrentUser().getEmail());
+                    userProfile.setSex(sex);
+                    userProfile.setInterestedIn(interestedIn);
+                    userProfile.setBirthday(birthday);
+                    userProfile.setPhone(phone);
+                    userProfile.setImage(image);
+                    new MyProfile(SignUp.this).setProfile(userProfile);
                     startActivity(new Intent(SignUp.this, MainActivity.class));
                 }else{
                     Toast.makeText(SignUp.this, "Registration failed. Try again", Toast.LENGTH_SHORT).show();

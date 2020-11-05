@@ -14,7 +14,7 @@
 
     <item android:id="@+id/nav_chats"
         android:title="Chats"
-        android:icon="@drawable/chart_icon"
+        android:icon="@drawable/ic_baseline_question_answer_24"
         app:showAsAction="always"/>
 
     <item android:id="@+id/nav_profile"

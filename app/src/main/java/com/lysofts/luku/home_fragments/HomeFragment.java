@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -28,6 +29,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.lysofts.luku.R;
 import com.lysofts.luku.chat_app.ChatActivity;
+import com.lysofts.luku.constants.MyConstants;
+import com.lysofts.luku.firebase.Matches;
+import com.lysofts.luku.local.MyProfile;
 import com.lysofts.luku.models.Upload;
 import com.lysofts.luku.models.UserProfile;
 import com.lysofts.luku.swipe.SwipeListener;
@@ -48,9 +52,12 @@ import jp.shts.android.storiesprogressview.StoriesProgressView;
 
 public class HomeFragment  extends Fragment {
     DatabaseReference databaseReference;
+    FirebaseAuth mAuth;
     List<UserProfile> users = new ArrayList<>();
     ViewFlipper viewFlipper;
     CardView cardView;
+
+    UserProfile myProfile;
 
     private Animation slideLeftIn;
     private Animation slideLeftOut;
@@ -74,6 +81,9 @@ public class HomeFragment  extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         databaseReference = FirebaseDatabase.getInstance().getReference();
+        mAuth =  FirebaseAuth.getInstance();
+        myProfile = new MyProfile(getActivity()).getProfile();
+
         loadUsers();
     }
 
@@ -84,8 +94,14 @@ public class HomeFragment  extends Fragment {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for(DataSnapshot snapshot1: snapshot.getChildren()){
                     UserProfile  user = snapshot1.getValue(UserProfile.class);
-                    if (user.getEmail()!= FirebaseAuth.getInstance().getCurrentUser().getEmail()){
-                        users.add(user);
+                    if (!user.getId().equals(mAuth.getUid())){
+                        if (user.getSex().equals("man") && myProfile.getInterestedIn().equals("men")){
+                            users.add(user);
+                        }else if (user.getSex().equals("woman") && myProfile.getInterestedIn().equals("women")){
+                            users.add(user);
+                        }else if (myProfile.getInterestedIn().equals("any")){
+                            users.add(user);
+                        }
                     }
                 }
                 createFlipper();
@@ -100,18 +116,20 @@ public class HomeFragment  extends Fragment {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void createFlipper() {
-        if(users !=null && users.size()>0){
-            for(UserProfile user: users){
-                LayoutInflater inflater = LayoutInflater.from(getContext());
+        if(users !=null && users.size()>0 && getActivity()!=null){
+            for(final UserProfile user: users){
+                LayoutInflater inflater = LayoutInflater.from(getActivity());
                 View view = inflater.inflate(R.layout.person_preview, null);
                 cardView = view.findViewById(R.id.user_preview);
                 TextView txtName = view.findViewById(R.id.txtName);
+                TextView txtTitle = view.findViewById(R.id.txtTitle);
                 final ProgressBar progressBar = view.findViewById(R.id.progress_circular);
                 final ImageView imageView = view.findViewById(R.id.image);
                 View btnPrev = view.findViewById(R.id.btnPrev);
                 View btnNext = view.findViewById(R.id.btnNext);
 
-                ImageView btnChat = view.findViewById(R.id.btnChat);
+                ImageButton btnMatch = view.findViewById(R.id.btnMatch);
+                ImageButton btnChat = view.findViewById(R.id.btnChat);
 
                 final StoriesProgressView storiesProgressView = (StoriesProgressView) view.findViewById(R.id.stories);
 
@@ -122,77 +140,71 @@ public class HomeFragment  extends Fragment {
                         uploads.add(upload);
                     }
                 }
-                int age=0;
-                try {
-                    Date d= null;
-                    d = new SimpleDateFormat("MM/dd/yyyy").parse(user.getBirthday());
-                    Calendar c = Calendar.getInstance();
-                    c.setTime(d);
-                    int year = c.get(Calendar.YEAR);
-                    int month = c.get(Calendar.MONTH) + 1;
-                    int date = c.get(Calendar.DATE);
-                    LocalDate l1 = LocalDate.of(year, month, date);
-                    LocalDate now1 = LocalDate.now();
-                    Period diff1 = Period.between(l1, now1);
-                    age = diff1.getYears();
-                } catch (ParseException e) {
-                    e.printStackTrace();
+                int age = MyConstants.getAge(user.getBirthday());
+                txtName.setText(user.getName()+", "+age);
+                txtTitle.setText(user.getTitle());
+
+                if(uploads!=null && uploads.size()>0){
+                    storiesProgressView.setStoriesCount(uploads.size());
+                    storiesProgressView.setStoryDuration(15000L);
+                    picassoLoad(uploads.get(counter).getImage(), imageView, progressBar);
+                    storiesProgressView.startStories();
+                    storiesProgressView.setStoriesListener(new StoriesProgressView.StoriesListener() {
+                        @Override
+                        public void onNext() {
+                            if(counter < uploads.size()){
+                                counter++;
+                                picassoLoad(uploads.get(counter).getImage(), imageView, progressBar);
+                            }else{
+                                viewFlipper.showNext();
+                                counter=0;
+                                storiesProgressView.startStories();
+                            }
+                        }
+
+                        @Override
+                        public void onPrev() {
+                            if(counter > 0){
+                                counter--;
+                                picassoLoad(uploads.get(counter).getImage(), imageView, progressBar);
+                            }else{
+                                viewFlipper.showPrevious();
+                                counter=0;
+                                storiesProgressView.startStories();
+                            }
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            storiesProgressView.startStories();
+                            counter=0;
+                            viewFlipper.showNext();
+                            //Toast.makeText(getContext(), "Stories are over", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+                    viewFlipper.addView(view);
+                    btnPrev.setOnClickListener(new View.OnClickListener(){
+                        @Override
+                        public void onClick(View view) {
+                            storiesProgressView.reverse();
+                        }
+                    });
+                    btnNext.setOnClickListener(new View.OnClickListener(){
+                        @Override
+                        public void onClick(View view) {
+                            storiesProgressView.skip();
+                        }
+                    });
+
                 }
 
-                txtName.setText(user.getName()+", "+age);
-
-                storiesProgressView.setStoriesCount(uploads.size());
-                storiesProgressView.setStoryDuration(15000L);
-                picassoLoad(uploads.get(counter).getImage(), imageView, progressBar);
-                storiesProgressView.startStories();
-                storiesProgressView.setStoriesListener(new StoriesProgressView.StoriesListener() {
-                    @Override
-                    public void onNext() {
-                        if(counter < uploads.size()){
-                            counter++;
-                            picassoLoad(uploads.get(counter).getImage(), imageView, progressBar);
-                        }else{
-                            viewFlipper.showNext();
-                            counter=0;
-                            storiesProgressView.startStories();
-                        }
-                    }
-
-                    @Override
-                    public void onPrev() {
-                        if(counter > 0){
-                            counter--;
-                            picassoLoad(uploads.get(counter).getImage(), imageView, progressBar);
-                        }else{
-                            viewFlipper.showPrevious();
-                            counter=0;
-                            storiesProgressView.startStories();
-                        }
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        storiesProgressView.startStories();
-                        counter=0;
-                        viewFlipper.showNext();
-                        //Toast.makeText(getContext(), "Stories are over", Toast.LENGTH_SHORT).show();
-                    }
-                });
-
-                viewFlipper.addView(view);
-                btnPrev.setOnClickListener(new View.OnClickListener(){
+                btnMatch.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        storiesProgressView.reverse();
+                       new Matches(getActivity()).sendMatchRequest(user);
                     }
                 });
-                btnNext.setOnClickListener(new View.OnClickListener(){
-                    @Override
-                    public void onClick(View view) {
-                        storiesProgressView.skip();
-                    }
-                });
-
                 btnChat.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -220,7 +232,7 @@ public class HomeFragment  extends Fragment {
     }
 
     private void handleSwipes() {
-        cardView.setOnTouchListener(new SwipeListener(getContext()){
+        viewFlipper.setOnTouchListener(new SwipeListener(getContext()){
             public void onSwipeTop() {
                 Toast.makeText(getContext(), "top", Toast.LENGTH_SHORT).show();
             }
@@ -236,7 +248,7 @@ public class HomeFragment  extends Fragment {
                 Toast.makeText(getContext(), "bottom", Toast.LENGTH_SHORT).show();
             }
         });
-        cardView.setOnClickListener(new View.OnClickListener() {
+        viewFlipper.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 

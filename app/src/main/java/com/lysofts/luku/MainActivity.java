@@ -16,6 +16,7 @@ import com.lysofts.luku.home_fragments.HomeFragment;
 import com.lysofts.luku.home_fragments.MatchesFragment;
 import com.lysofts.luku.home_fragments.MoreFragment;
 import com.lysofts.luku.home_fragments.ProfileFragment;
+import com.lysofts.luku.local.MyProfile;
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener{
     FirebaseAuth mAuth;
@@ -26,14 +27,26 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         setContentView(R.layout.activity_main);
         mAuth = FirebaseAuth.getInstance();
 
-        loadFragment(new HomeFragment());
+        createFragment(new HomeFragment());
 
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
     }
 
+    private void createFragment(Object fragment){
+        if (fragment != null) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .setCustomAnimations(
+                            R.anim.slide_in,
+                            R.anim.fade_out
+                    )
+                    .add(R.id.fragment_container, (Fragment) fragment)
+                    .commit();
+        }
+    }
 
-    private boolean loadFragment(Object fragment) {
+    private void loadFragment(Object fragment) {
         //switching fragment
         if (fragment != null) {
             getSupportFragmentManager()
@@ -44,9 +57,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                     )
                     .replace(R.id.fragment_container, (Fragment) fragment)
                     .commit();
-            return true;
         }
-        return false;
     }
 
     @Override
@@ -69,11 +80,13 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 fragment = new MoreFragment();
                 break;
         }
-        return loadFragment(fragment);
+        loadFragment(fragment);
+        return true;
     }
 
 
     public void signOut() {
+        new MyProfile(this).deleteProfile();
         mAuth.signOut();
         startActivity(new Intent(MainActivity.this, Splash.class));
         finish();

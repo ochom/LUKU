@@ -1,20 +1,23 @@
 package com.lysofts.luku.models;
 
-import java.util.List;
 import java.util.Map;
 
 public class UserProfile {
-    String name,email, birthday,sex, interestedIn, phone, image;
+    String id, name, profession, title, email, birthday,sex, interestedIn, phone, image;
     Map<String, Upload> uploads;
+    Map<String, Match> matches;
     Object[] chats;
-    Object[] matchRequestsSent;
-    Object[] matchRequestsReceived;
-    Object[] matches;
-    Object[] likesSent;
-    Object[] likesReceived;
     Object[] dislikes;
 
     public UserProfile() {
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -23,6 +26,22 @@ public class UserProfile {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getProfession() {
+        return profession;
+    }
+
+    public void setProfession(String profession) {
+        this.profession = profession;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getEmail() {
@@ -90,44 +109,12 @@ public class UserProfile {
         this.chats = chats;
     }
 
-    public Object[] getMatchRequestsSent() {
-        return matchRequestsSent;
-    }
-
-    public void setMatchRequestsSent(Object[] matchRequestsSent) {
-        this.matchRequestsSent = matchRequestsSent;
-    }
-
-    public Object[] getMatchRequestsReceived() {
-        return matchRequestsReceived;
-    }
-
-    public void setMatchRequestsReceived(Object[] matchRequestsReceived) {
-        this.matchRequestsReceived = matchRequestsReceived;
-    }
-
-    public Object[] getMatches() {
+    public Map<String, Match> getMatches() {
         return matches;
     }
 
-    public void setMatches(Object[] matches) {
+    public void setMatches(Map<String, Match> matches) {
         this.matches = matches;
-    }
-
-    public Object[] getLikesSent() {
-        return likesSent;
-    }
-
-    public void setLikesSent(Object[] likesSent) {
-        this.likesSent = likesSent;
-    }
-
-    public Object[] getLikesReceived() {
-        return likesReceived;
-    }
-
-    public void setLikesReceived(Object[] likesReceived) {
-        this.likesReceived = likesReceived;
     }
 
     public Object[] getDislikes() {
@@ -137,4 +124,5 @@ public class UserProfile {
     public void setDislikes(Object[] dislikes) {
         this.dislikes = dislikes;
     }
+
 }

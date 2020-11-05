@@ -23,9 +23,11 @@
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/matches_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/rounded_white"
-        android:paddingHorizontal="20dp">
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="10dp">
     </androidx.recyclerview.widget.RecyclerView>
 </LinearLayout>
