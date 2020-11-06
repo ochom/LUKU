@@ -8,4 +8,7 @@
     <string name="gps_network_not_enabled">Location setting not enabled</string>
     <string name="open_location_settings">Open location settings</string>
     <string name="Cancel">Cancel</string>
+    <string name="match_status_sent">sent</string>
+    <string name="match_status_received">received</string>
+    <string name="match_status_matched">matched</string>
 </resources>

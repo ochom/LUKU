@@ -128,10 +128,10 @@ public class HomeFragment  extends Fragment {
                 View btnPrev = view.findViewById(R.id.btnPrev);
                 View btnNext = view.findViewById(R.id.btnNext);
 
-                ImageButton btnMatch = view.findViewById(R.id.btnMatch);
-                ImageButton btnChat = view.findViewById(R.id.btnChat);
+                ImageButton btnLike = view.findViewById(R.id.btnLike);
+                ImageButton btnDislike = view.findViewById(R.id.btnDislike);
 
-                final StoriesProgressView storiesProgressView = (StoriesProgressView) view.findViewById(R.id.stories);
+                final StoriesProgressView storiesProgressView = view.findViewById(R.id.stories);
 
                 final List<Upload> uploads = new ArrayList<>();
                 if(user.getUploads()!=null && user.getUploads().size()>0){
@@ -143,77 +143,76 @@ public class HomeFragment  extends Fragment {
                 int age = MyConstants.getAge(user.getBirthday());
                 txtName.setText(user.getName()+", "+age);
                 txtTitle.setText(user.getTitle());
-
-                if(uploads!=null && uploads.size()>0){
-                    storiesProgressView.setStoriesCount(uploads.size());
-                    storiesProgressView.setStoryDuration(15000L);
-                    picassoLoad(uploads.get(counter).getImage(), imageView, progressBar);
-                    storiesProgressView.startStories();
-                    storiesProgressView.setStoriesListener(new StoriesProgressView.StoriesListener() {
-                        @Override
-                        public void onNext() {
-                            if(counter < uploads.size()){
-                                counter++;
-                                picassoLoad(uploads.get(counter).getImage(), imageView, progressBar);
-                            }else{
-                                viewFlipper.showNext();
-                                counter=0;
-                                storiesProgressView.startStories();
-                            }
-                        }
-
-                        @Override
-                        public void onPrev() {
-                            if(counter > 0){
-                                counter--;
-                                picassoLoad(uploads.get(counter).getImage(), imageView, progressBar);
-                            }else{
-                                viewFlipper.showPrevious();
-                                counter=0;
-                                storiesProgressView.startStories();
-                            }
-                        }
-
-                        @Override
-                        public void onComplete() {
-                            storiesProgressView.startStories();
-                            counter=0;
-                            viewFlipper.showNext();
-                            //Toast.makeText(getContext(), "Stories are over", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-
-                    viewFlipper.addView(view);
-                    btnPrev.setOnClickListener(new View.OnClickListener(){
-                        @Override
-                        public void onClick(View view) {
-                            storiesProgressView.reverse();
-                        }
-                    });
-                    btnNext.setOnClickListener(new View.OnClickListener(){
-                        @Override
-                        public void onClick(View view) {
-                            storiesProgressView.skip();
-                        }
-                    });
-
-                }
-
-                btnMatch.setOnClickListener(new View.OnClickListener() {
+                createStories(view, uploads, storiesProgressView, imageView, progressBar, btnPrev, btnNext);
+                btnLike.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                       new Matches(getActivity()).sendMatchRequest(user);
+                    Matches.sendMatchRequest(new MyProfile(getActivity()).getProfile(), user, "like");
                     }
                 });
-                btnChat.setOnClickListener(new View.OnClickListener() {
+
+                btnDislike.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        startActivity(new Intent(getContext(), ChatActivity.class));
+                    Matches.sendMatchRequest(new MyProfile(getActivity()).getProfile(), user, "dislike");
                     }
                 });
             }
         }
         handleSwipes();
+    }
+
+    private void createStories(final View view, final List<Upload> uploads, final StoriesProgressView storiesProgressView,
+                               final ImageView imageView, final ProgressBar progressBar, final View btnPrev, final View btnNext) {
+        if(uploads!=null && uploads.size()>0){
+            viewFlipper.removeAllViews();
+            counter=0;
+            storiesProgressView.setStoriesCount(uploads.size());
+            storiesProgressView.setStoryDuration(15000L);
+            picassoLoad(uploads.get(counter).getImage(), imageView, progressBar);
+            storiesProgressView.startStories();
+            storiesProgressView.setStoriesListener(new StoriesProgressView.StoriesListener() {
+                @Override
+                public void onNext() {
+                    if(counter < uploads.size()){
+                        counter++;
+                        picassoLoad(uploads.get(counter).getImage(), imageView, progressBar);
+                    }else{
+                        createStories(view, uploads, storiesProgressView, imageView, progressBar, btnPrev, btnNext);
+                    }
+                }
+
+                @Override
+                public void onPrev() {
+                    if(counter > 0){
+                        counter--;
+                        picassoLoad(uploads.get(counter).getImage(), imageView, progressBar);
+                    }else{
+                        createStories(view, uploads, storiesProgressView, imageView, progressBar, btnPrev, btnNext);
+                    }
+                }
+
+                @Override
+                public void onComplete() {
+                    createStories(view, uploads, storiesProgressView, imageView, progressBar, btnPrev, btnNext);
+                }
+            });
+
+            viewFlipper.addView(view);
+            btnPrev.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View view) {
+                    storiesProgressView.reverse();
+                }
+            });
+            btnNext.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View view) {
+                    storiesProgressView.skip();
+                }
+            });
+
+        }
     }
 
     private void picassoLoad(String src, final ImageView imageView, final ProgressBar progressBar){

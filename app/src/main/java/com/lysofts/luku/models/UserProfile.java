@@ -5,9 +5,6 @@ import java.util.Map;
 public class UserProfile {
     String id, name, profession, title, email, birthday,sex, interestedIn, phone, image;
     Map<String, Upload> uploads;
-    Map<String, Match> matches;
-    Object[] chats;
-    Object[] dislikes;
 
     public UserProfile() {
     }
@@ -99,30 +96,6 @@ public class UserProfile {
 
     public void setUploads(Map<String, Upload> uploads) {
         this.uploads = uploads;
-    }
-
-    public Object[] getChats() {
-        return chats;
-    }
-
-    public void setChats(Object[] chats) {
-        this.chats = chats;
-    }
-
-    public Map<String, Match> getMatches() {
-        return matches;
-    }
-
-    public void setMatches(Map<String, Match> matches) {
-        this.matches = matches;
-    }
-
-    public Object[] getDislikes() {
-        return dislikes;
-    }
-
-    public void setDislikes(Object[] dislikes) {
-        this.dislikes = dislikes;
     }
 
 }

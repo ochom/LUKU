@@ -1,49 +1,30 @@
 package com.lysofts.luku.models;
 
-public class Match {
-    String id, name, image, title,birthday, status;
+import java.io.Serializable;
+import java.util.Map;
+
+public class Match implements Serializable {
+    UserProfile sender;
+    UserProfile receiver;
+    String status, type;
 
     public Match() {
     }
 
-    public String getId() {
-        return id;
+    public UserProfile getSender() {
+        return sender;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setSender(UserProfile sender) {
+        this.sender = sender;
     }
 
-    public String getName() {
-        return name;
+    public UserProfile getReceiver() {
+        return receiver;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getImage() {
-        return image;
-    }
-
-    public void setImage(String image) {
-        this.image = image;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getBirthday() {
-        return birthday;
-    }
-
-    public void setBirthday(String birthday) {
-        this.birthday = birthday;
+    public void setReceiver(UserProfile receiver) {
+        this.receiver = receiver;
     }
 
     public String getStatus() {
@@ -52,5 +33,13 @@ public class Match {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }
