@@ -5,7 +5,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
     android:gravity="center_vertical"
-    android:padding="5dp">
+    android:paddingVertical="10dp"
+    android:paddingHorizontal="10dp"
+    android:background="#FFFFFF"
+    android:layout_marginBottom="1dp">
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/imgProfile"

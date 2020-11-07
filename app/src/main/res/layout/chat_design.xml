@@ -5,7 +5,35 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
     android:gravity="center_vertical"
-    android:padding="5dp">
+    android:paddingVertical="10dp"
+    android:paddingHorizontal="10dp"
+    android:background="#FFFFFF"
+    android:layout_marginBottom="1dp">
+
+        <TextView
+            android:id="@+id/tvTime"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:text="12:40"/>
+
+        <TextView
+            android:id="@+id/tvNewMessagesCount"
+            app:layout_constraintTop_toBottomOf="@+id/tvTime"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="3"
+            android:fontFamily="sans-serif"
+            android:textSize="8sp"
+            android:textStyle="bold"
+            android:layout_marginTop="5dp"
+            android:paddingVertical="3dp"
+            android:textColor="@color/white"
+            android:background="@drawable/new_messages_bg"
+            android:paddingHorizontal="5dp"/>
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/imgProfile"
@@ -25,22 +53,34 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginLeft="20dp">
+            android:layout_marginLeft="10dp">
             <TextView
                 android:id="@+id/tvName"
                 android:transitionName="nameMain"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Dummy, 24"
+                android:text="Dummy"
                 android:textColor="#234"
-                android:textStyle="bold"
-                android:textSize="15sp"/>
-            <TextView
-                android:id="@+id/tvTitle"
+                android:textSize="18sp"/>
+            <LinearLayout
+                android:paddingLeft="5dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Hello pal, I just wanted to say that..."
-                android:textColor="#222"
-                android:textSize="12sp"/>
+                android:orientation="horizontal"
+                android:gravity="bottom">
+                <ImageView
+                    android:id="@+id/imgStatus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="18dp"
+                    android:layout_marginRight="5dp"
+                    android:src="@drawable/ic_baseline_done_all_24"/>
+                <TextView
+                    android:id="@+id/tvLastMessage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Hello pal, I just wanted to say that..."
+                    android:textColor="#aaaaaa"
+                    android:textSize="14sp"/>
+            </LinearLayout>
         </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

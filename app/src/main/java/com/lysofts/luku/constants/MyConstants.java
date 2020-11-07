@@ -33,4 +33,20 @@ public class MyConstants {
         return age;
 
     }
+
+    public static String getTime(String time) {
+        try {
+            SimpleDateFormat simpleDF = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+            Date date1   = new Date();
+            Date date2 = simpleDF.parse(time);
+            if (date1.getMonth() != date2.getMonth()){
+                time = time.substring(0,8);
+            }else{
+                time = time.substring(11,16);
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return time;
+    }
 }

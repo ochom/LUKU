@@ -1,6 +1,5 @@
 package com.lysofts.luku.home_fragments;
 
-import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -28,7 +27,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.lysofts.luku.R;
-import com.lysofts.luku.chat_app.ChatActivity;
 import com.lysofts.luku.constants.MyConstants;
 import com.lysofts.luku.firebase.Matches;
 import com.lysofts.luku.local.MyProfile;
@@ -38,13 +36,7 @@ import com.lysofts.luku.swipe.SwipeListener;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.Period;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 

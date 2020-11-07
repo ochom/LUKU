@@ -34,6 +34,7 @@ public class Matches {
                     UserProfile receiver = dataSnapshot.child("receiver").getValue(UserProfile.class);
                     if (sender.getId().equals(senderId) && receiver.getId().equals(receiverId)){
                         db.child("matches").child(dataSnapshot.getKey()).child("status").setValue("matched");
+                        Chats.createContacts(sender, receiver);
                     }
                 }
             }

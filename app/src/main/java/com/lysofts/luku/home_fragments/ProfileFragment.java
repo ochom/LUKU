@@ -139,7 +139,7 @@ public class ProfileFragment extends Fragment{
     }
 
     private void updateUI() {
-        Picasso.get().load(userProfile.getImage()).into(profilePic);
+        Picasso.get().load(userProfile.getImage()).placeholder(R.drawable.ic_baseline_account_circle_24).into(profilePic);
         name1.setText(userProfile.getName());
         title.setText(userProfile.getTitle());
         name2.setText(userProfile.getName());

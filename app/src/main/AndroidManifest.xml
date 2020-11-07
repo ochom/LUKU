@@ -27,7 +27,7 @@
         android:theme="@style/Base.Theme.AppCompat"/>
         <activity android:name=".PhotoviewerActivity"/>
         <activity android:name=".GenderActivity" />
-        <activity android:name=".chat_app.ChatActivity"/>
+        <activity android:name=".ChatActivity"/>
         <activity android:name=".Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

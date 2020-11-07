@@ -19,7 +19,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.lysofts.luku.R;
 import com.lysofts.luku.models.Match;
-import com.lysofts.luku.view_holders.MatchesAdapter;
+import com.lysofts.luku.adapters.MatchesAdapter;
 
 import java.util.ArrayList;
 import java.util.List;

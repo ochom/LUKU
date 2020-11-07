@@ -3,7 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingVertical="5dp">
     <RelativeLayout
         android:layout_width="300dp"
         android:layout_height="wrap_content"
@@ -21,7 +22,7 @@
                 android:id="@+id/tvMessage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="No we just can't i have waited for this for like the whole of my life, Don't turn it down dear"
+                android:text="Hello world"
                 android:textColor="#000000"
                 android:textSize="18sp" />
             <LinearLayout
@@ -38,6 +39,7 @@
                     android:textColor="#575757"
                     android:textSize="12sp" />
                 <ImageView
+                    android:id="@+id/imgStatus"
                     android:layout_marginLeft="5dp"
                     android:layout_marginStart="5dp"
                     android:layout_width="wrap_content"

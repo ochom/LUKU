@@ -1,4 +1,4 @@
-package com.lysofts.luku.view_holders;
+package com.lysofts.luku.adapters;
 
 import android.content.Context;
 import android.content.Intent;
@@ -18,7 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.lysofts.luku.R;
-import com.lysofts.luku.chat_app.ChatActivity;
+import com.lysofts.luku.ChatActivity;
 import com.lysofts.luku.constants.MyConstants;
 import com.lysofts.luku.firebase.Matches;
 import com.lysofts.luku.models.Match;
@@ -54,7 +54,7 @@ public class MatchesAdapter extends RecyclerView.Adapter<MatchesAdapter.ViewHold
             @Override
             public void onClick(View view) {
             Intent intent = new Intent(context, ChatActivity.class);
-            intent.putExtra("userId", match.getSender().getId().equals(mAuth.getUid())?match.getReceiver().getId():match.getSender().getImage());
+            intent.putExtra("userId", match.getSender().getId().equals(mAuth.getUid())?match.getReceiver().getId():match.getSender().getId());
             intent.putExtra("image", match.getSender().getId().equals(mAuth.getUid())?match.getReceiver().getImage():match.getSender().getImage());
             intent.putExtra("name", match.getSender().getId().equals(mAuth.getUid())?match.getReceiver().getName():match.getSender().getName());
             intent.putExtra("title", match.getSender().getId().equals(mAuth.getUid())?match.getReceiver().getTitle():match.getSender().getTitle());
