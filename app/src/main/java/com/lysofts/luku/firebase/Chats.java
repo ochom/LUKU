@@ -11,26 +11,32 @@ import com.lysofts.luku.models.Message;
 import com.lysofts.luku.models.UserProfile;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Chats {
-    public static void createContacts(UserProfile myProfile, UserProfile otherUser){
-        DatabaseReference db =  FirebaseDatabase.getInstance().getReference();
+    DatabaseReference db;
+
+    public  Chats(){
+        db = FirebaseDatabase.getInstance().getReference();
+    }
+
+    public  void createContacts(UserProfile myProfile, UserProfile otherUser){
+        db =  FirebaseDatabase.getInstance().getReference();
         db.child("chats").child(myProfile.getId()).child(otherUser.getId()).child("profile").setValue(otherUser);
         db.child("chats").child(otherUser.getId()).child(myProfile.getId()).child("profile").setValue(myProfile);
     }
 
-    public static void sendMessage(String myId, String userId, String text) {
-        DatabaseReference db =  FirebaseDatabase.getInstance().getReference();
-        SimpleDateFormat simpleDF = new SimpleDateFormat("dd/MM/YYYY HH:mm:ss");
+    public  void sendMessage(String myId, String userId, String text) {
+        db =  FirebaseDatabase.getInstance().getReference();
+        SimpleDateFormat simpleDF = new SimpleDateFormat("yyyyMMddHHmmss");
         String time = simpleDF.format(new Date());
         Message message = new Message();
         message.setText(text);
         message.setTime(time);
         message.setSender(myId);
-        message.setStatus("pending");
+        message.setRead(false);
 
         db.child("chats").child(myId).child(userId).child("messages").push().setValue(message);
         db.child("chats").child(myId).child(userId).child("lastMessage").setValue(message);
@@ -39,20 +45,27 @@ public class Chats {
         db.child("chats").child(userId).child(myId).child("lastMessage").setValue(message);
     }
 
-    public static void markMessagesAsRead(final String myId, final String userId) {
-        final DatabaseReference db =  FirebaseDatabase.getInstance().getReference();
+    public  Map<DatabaseReference, ValueEventListener> markMessagesAsRead(final String myId, final String userId) {
+        Map<DatabaseReference, ValueEventListener> databaseListeners = new HashMap<>();
+        databaseListeners.put(db.child("chats").child(myId).child(userId).child("messages"), myDBReceivedListener(myId));
+        databaseListeners.put(db.child("chats").child(userId).child(myId).child("messages"), userDBSentListener(myId));
+        databaseListeners.put( db.child("chats").child(userId).child(myId), userDBLastMessageListener(myId));
 
-        db.child("chats").child(userId).child(myId).child("messages").addListenerForSingleValueEvent(new ValueEventListener() {
+        for (Map.Entry<DatabaseReference, ValueEventListener> entry: databaseListeners.entrySet()){
+            entry.getKey().addValueEventListener(entry.getValue());
+        }
+        return databaseListeners;
+    }
+
+    private ValueEventListener myDBReceivedListener(final String myId) {
+        return new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                List<String> messageKeys = new ArrayList<>();
                 for (DataSnapshot dataSnapshot: snapshot.getChildren()){
                     Message message = dataSnapshot.getValue(Message.class);
                     if (!message.getSender().equals(myId)){
-                        messageKeys.add(dataSnapshot.getKey());
+                        dataSnapshot.child("read").getRef().setValue(true);
                     }
-                db.removeEventListener(this);
-                markAsRead(myId, userId, messageKeys);
                 }
             }
 
@@ -60,16 +73,36 @@ public class Chats {
             public void onCancelled(@NonNull DatabaseError error) {
 
             }
-        });
+        };
+    }
 
-        db.child("chats").child(userId).child(myId).addListenerForSingleValueEvent(new ValueEventListener() {
+    private ValueEventListener userDBSentListener(final String myId) {
+        return  new ValueEventListener(){
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot dataSnapshot: snapshot.getChildren()){
+                    Message message = dataSnapshot.getValue(Message.class);
+                    if (!message.getSender().equals(myId)){
+                        dataSnapshot.child("read").getRef().setValue(true);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        };
+    }
+
+    private ValueEventListener userDBLastMessageListener(final String myId) {
+        return  new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.hasChild("lastMessage")){
                     Message message = snapshot.child("lastMessage").getValue(Message.class);
-                    db.removeEventListener(this);
                     if (!message.getSender().equals(myId)){
-                        db.child("chats").child(userId).child(myId).child("lastMessage").child("status").setValue("seen");
+                        snapshot.child("lastMessage").child("read").getRef().setValue(true);
                     }
                 }
             }
@@ -78,13 +111,6 @@ public class Chats {
             public void onCancelled(@NonNull DatabaseError error) {
 
             }
-        });
-    }
-
-    private static void markAsRead(String myId, String userId, List<String> messageKeys) {
-        final DatabaseReference db =  FirebaseDatabase.getInstance().getReference();
-        for (String key: messageKeys){
-            db.child("chats").child(userId).child(myId).child("messages").child(key).child("status").setValue("seen");
-        }
+        };
     }
 }

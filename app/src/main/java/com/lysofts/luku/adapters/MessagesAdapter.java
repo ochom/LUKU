@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -90,7 +91,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
             tvMessage.setText(message.getText());
             tvTime.setText(MyConstants.getTime(message.getTime()));
             if (message.getSender().equals(mAuth.getUid())){
-                if (message.getStatus().equals("pending")){
+                if (!message.isRead()){
                     Drawable drawable = imgStatus.getDrawable();
                     drawable.setColorFilter(Color.GRAY, PorterDuff.Mode.SRC_ATOP);
                     imgStatus.setImageDrawable(drawable);

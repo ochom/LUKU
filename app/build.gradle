@@ -69,6 +69,8 @@ dependencies {
 
     //Stories
     implementation 'com.github.shts:StoriesProgressView:3.0.0'
+
+    implementation 'joda-time:joda-time:2.9.9'
 }
 repositories {
     mavenCentral()

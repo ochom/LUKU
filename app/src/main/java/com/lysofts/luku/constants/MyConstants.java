@@ -4,6 +4,8 @@ import android.os.Build;
 
 import androidx.annotation.RequiresApi;
 
+import org.joda.time.DateTimeComparator;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -35,18 +37,22 @@ public class MyConstants {
     }
 
     public static String getTime(String time) {
+        String editedDate;
+        SimpleDateFormat simpleDF;
         try {
-            SimpleDateFormat simpleDF = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-            Date date1   = new Date();
+            simpleDF = new SimpleDateFormat("yyyyMMddHHmmss");
+            Date now   = new Date();
             Date date2 = simpleDF.parse(time);
-            if (date1.getMonth() != date2.getMonth()){
-                time = time.substring(0,8);
+            simpleDF = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+            if (DateTimeComparator.getDateOnlyInstance().compare(now, date2)>0){
+                editedDate = simpleDF.format(date2).substring(0,8);
             }else{
-                time = time.substring(11,16);
+                editedDate = simpleDF.format(date2).substring(11,16);
             }
         } catch (ParseException e) {
+            editedDate="";
             e.printStackTrace();
         }
-        return time;
+        return editedDate;
     }
 }

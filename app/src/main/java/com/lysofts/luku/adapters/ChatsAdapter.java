@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -102,7 +103,7 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ViewHolder> 
                 if (message.getSender().equals(mAuth.getUid())){
                     imgStatus.setVisibility(View.VISIBLE);
                 }
-                if (message.getStatus().equals("pending")){
+                if (!message.isRead()){
                     Drawable drawable = imgStatus.getDrawable();
                     drawable.setColorFilter(Color.GRAY, PorterDuff.Mode.SRC_ATOP);
                     imgStatus.setImageDrawable(drawable);
@@ -115,7 +116,7 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ViewHolder> 
                 int totalNew=0;
                 for (Map.Entry<String, Message> entry: chat.getMessages().entrySet()){
                     Message message = entry.getValue();
-                    if (message.getStatus().equals("pending") && message.getSender().equals(mAuth.getUid())){
+                    if (!message.isRead() && !message.getSender().equals(mAuth.getUid())){
                         totalNew++;
                     }
                 }

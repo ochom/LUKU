@@ -42,8 +42,10 @@ import com.google.firebase.storage.UploadTask;
 import com.lysofts.luku.MainActivity;
 import com.lysofts.luku.PhotoviewerActivity;
 import com.lysofts.luku.R;
+import com.lysofts.luku.SettingsActivity;
 import com.lysofts.luku.SignUp;
 import com.lysofts.luku.local.MyProfile;
+import com.lysofts.luku.models.Match;
 import com.lysofts.luku.models.Upload;
 import com.lysofts.luku.models.UserProfile;
 import com.squareup.picasso.Picasso;
@@ -72,11 +74,11 @@ public class ProfileFragment extends Fragment{
 
     CircleImageView profilePic;
     ImageView editProfilePic;
-    TextView name1, title, name2, email, phone, dob, interestedIn;
+    TextView tvName, tvTitle, tvSent, tvReceived, tvMatched;
     LinearLayout uploadsLayout;
     ProgressBar progressBar;
     LinearLayout profileLayout;
-    Button btnAddPic, btnSignOut;
+    Button btnAddPic, btnEditProfile, btnSignOut;
 
     String clickedImage;
 
@@ -87,16 +89,15 @@ public class ProfileFragment extends Fragment{
         progressBar = v.findViewById(R.id.progress_circular);
         profileLayout = v.findViewById(R.id.profile);
         btnAddPic = v.findViewById(R.id.btn_add_pic);
+        btnEditProfile = v.findViewById(R.id.btn_edit_profile);
         profilePic = v.findViewById(R.id.profile_pic);
         editProfilePic = v.findViewById(R.id.edit_profile_pic);
-        name1 = v.findViewById(R.id.tvName1);
-        title = v.findViewById(R.id.tvTitle);
+        tvName = v.findViewById(R.id.tvName);
+        tvTitle = v.findViewById(R.id.tvTitle);
+        tvSent = v.findViewById(R.id.tvSent);
+        tvReceived = v.findViewById(R.id.tvReceived);
+        tvMatched = v.findViewById(R.id.tvMatched);
         uploadsLayout = v.findViewById(R.id.uploadsLayout);
-        name2 = v.findViewById(R.id.tvName2);
-        email = v.findViewById(R.id.tvEmail);
-        phone = v.findViewById(R.id.tvPhone);
-        dob = v.findViewById(R.id.tvDOB);
-        interestedIn = v.findViewById(R.id.tvInterestedIn);
         btnSignOut = v.findViewById(R.id.btn_sign_out);
         return v;
     }
@@ -106,19 +107,53 @@ public class ProfileFragment extends Fragment{
         super.onViewCreated(view, savedInstanceState);
         userProfile = new MyProfile(getActivity()).getProfile();
         updateUI();
-
         mAuth = FirebaseAuth.getInstance();
         databaseReference = FirebaseDatabase.getInstance().getReference();
         storageReference = FirebaseStorage.getInstance().getReference();
 
-        loadUploads();
-        btnSignOut.setOnClickListener(new View.OnClickListener() {
+        loadMatches();
+
+        //loadUploads();
+        btnEditProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((MainActivity) getActivity()).signOut();
+                startActivity(new Intent(getActivity(), SettingsActivity.class));
             }
         });
     }
+
+    private void loadMatches() {
+        databaseReference.child("matches").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                int sent=0, received=0, matched=0;
+                for (DataSnapshot dataSnapshot: snapshot.getChildren()){
+                    Match match = dataSnapshot.getValue(Match.class);
+                    if (match.getType().equals("like")){
+                        if (match.getSender().getId().equals(mAuth.getUid())){
+                            sent++;
+                        }
+                        if (!match.getSender().getId().equals(mAuth.getUid())){
+                            received++;
+                        }
+                        if (match.getStatus().equals("matched")){
+                            matched++;
+                        }
+                    }
+
+                }
+                tvSent.setText(String.valueOf(sent));
+                tvReceived.setText(String.valueOf(received));
+                tvMatched.setText(String.valueOf(matched));
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
     private void loadUploads() {
         databaseReference.child("users").child(mAuth.getUid()).child("uploads").addValueEventListener(new ValueEventListener() {
             @Override
@@ -140,13 +175,8 @@ public class ProfileFragment extends Fragment{
 
     private void updateUI() {
         Picasso.get().load(userProfile.getImage()).placeholder(R.drawable.ic_baseline_account_circle_24).into(profilePic);
-        name1.setText(userProfile.getName());
-        title.setText(userProfile.getTitle());
-        name2.setText(userProfile.getName());
-        email.setText(userProfile.getEmail());
-        phone.setText(userProfile.getPhone());
-        dob.setText(userProfile.getBirthday());
-        interestedIn.setText(userProfile.getInterestedIn());
+        tvName.setText(userProfile.getName());
+        tvTitle.setText(userProfile.getTitle());
 
         profilePic.setOnClickListener(viewImage(userProfile.getImage()));
         editProfilePic.setOnClickListener(new View.OnClickListener() {

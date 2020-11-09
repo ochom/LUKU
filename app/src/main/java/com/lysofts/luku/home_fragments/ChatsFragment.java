@@ -47,9 +47,15 @@ public class ChatsFragment  extends Fragment {
         databaseReference = FirebaseDatabase.getInstance().getReference();
 
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        layoutManager.setReverseLayout(true);
+        layoutManager.setStackFromEnd(true);
+        recyclerView.setLayoutManager(layoutManager);
 
-        databaseReference.child("chats").child(mAth.getUid()).addValueEventListener(new ValueEventListener() {
+        databaseReference.child("chats")
+                .child(mAth.getUid())
+                .orderByChild("lastMessage/time")
+                .addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 chats = new ArrayList<>();

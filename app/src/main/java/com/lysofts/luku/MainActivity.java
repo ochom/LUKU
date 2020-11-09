@@ -1,6 +1,5 @@
 package com.lysofts.luku;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 
@@ -16,7 +15,6 @@ import com.lysofts.luku.home_fragments.HomeFragment;
 import com.lysofts.luku.home_fragments.MatchesFragment;
 import com.lysofts.luku.home_fragments.MoreFragment;
 import com.lysofts.luku.home_fragments.ProfileFragment;
-import com.lysofts.luku.local.MyProfile;
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener{
     FirebaseAuth mAuth;
@@ -82,13 +80,5 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         }
         loadFragment(fragment);
         return true;
-    }
-
-
-    public void signOut() {
-        new MyProfile(this).deleteProfile();
-        mAuth.signOut();
-        startActivity(new Intent(MainActivity.this, Splash.class));
-        finish();
     }
 }

@@ -1,15 +1,10 @@
 package com.lysofts.luku.models;
 
 public class Message {
-    String text, time,sender, status;
+    String text, time,sender;
+    boolean read;
 
     public Message() {
-    }
-
-    public Message(String text, String time, String status) {
-        this.text = text;
-        this.time = time;
-        this.status = status;
     }
 
     public String getText() {
@@ -36,11 +31,11 @@ public class Message {
         this.sender = sender;
     }
 
-    public String getStatus() {
-        return status;
+    public boolean isRead() {
+        return read;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setRead(boolean read) {
+        this.read = read;
     }
 }

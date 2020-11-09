@@ -32,12 +32,14 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 
 public class ChatActivity extends AppCompatActivity {
     String userId, name, userImage, title;
     FirebaseAuth mAuth;
     DatabaseReference databaseReference;
+    Map<DatabaseReference, ValueEventListener> databaseListeners;
 
     ImageView imgProfile;
     TextView tvName, tvTitle;
@@ -84,7 +86,6 @@ public class ChatActivity extends AppCompatActivity {
                 for (DataSnapshot dataSnapshot: snapshot.getChildren()){
                     Message message = dataSnapshot.getValue(Message.class);
                     messages.add(message);
-                    Chats.markMessagesAsRead(mAuth.getUid(), userId);
                 }
                 adapter = new MessagesAdapter(ChatActivity.this, messages, userImage);
                 recyclerView.setAdapter(adapter);
@@ -96,12 +97,13 @@ public class ChatActivity extends AppCompatActivity {
 
             }
         });
+
     }
 
     private View.OnClickListener sendMessage = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-        Chats.sendMessage(mAuth.getUid(), userId, txtMessage.getText().toString());
+        new Chats().sendMessage(mAuth.getUid(), userId, txtMessage.getText().toString());
         txtMessage.setText("");
         }
     };
@@ -135,6 +137,20 @@ public class ChatActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        databaseListeners = new Chats().markMessagesAsRead(mAuth.getUid(), userId);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        for (Map.Entry<DatabaseReference, ValueEventListener> entry : databaseListeners.entrySet()) {
+            entry.getKey().removeEventListener(entry.getValue());
+        }
     }
 
     public void closeActivity(View view) {
