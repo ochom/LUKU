@@ -8,6 +8,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.lysofts.luku.models.Message;
+import com.lysofts.luku.models.NotificationModel;
 import com.lysofts.luku.models.UserProfile;
 
 import java.text.SimpleDateFormat;
@@ -43,6 +44,13 @@ public class Chats {
 
         db.child("chats").child(userId).child(myId).child("messages").push().setValue(message);
         db.child("chats").child(userId).child(myId).child("lastMessage").setValue(message);
+
+        //send notification
+        NotificationModel notificationModel = new NotificationModel();
+        notificationModel.setTitle("New Message");
+        notificationModel.setContent(text);
+        notificationModel.setReceiver(userId);
+        db.child("notifications").push().setValue(notificationModel);
     }
 
     public  Map<DatabaseReference, ValueEventListener> markMessagesAsRead(final String myId, final String userId) {

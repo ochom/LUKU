@@ -1,5 +1,6 @@
 package com.lysofts.luku;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 
@@ -15,6 +16,7 @@ import com.lysofts.luku.home_fragments.HomeFragment;
 import com.lysofts.luku.home_fragments.MatchesFragment;
 import com.lysofts.luku.home_fragments.MoreFragment;
 import com.lysofts.luku.home_fragments.ProfileFragment;
+import com.lysofts.luku.services.NotificationService;
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener{
     FirebaseAuth mAuth;
@@ -25,7 +27,12 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         setContentView(R.layout.activity_main);
         mAuth = FirebaseAuth.getInstance();
 
-        createFragment(new HomeFragment());
+        if (savedInstanceState==null){
+            createFragment(new HomeFragment());
+        }
+
+        Intent intent = new Intent(this, NotificationService.class);
+        startService(intent);
 
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
@@ -44,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         }
     }
 
-    private void loadFragment(Object fragment) {
+    private boolean loadFragment(Object fragment) {
         //switching fragment
         if (fragment != null) {
             getSupportFragmentManager()
@@ -55,7 +62,9 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                     )
                     .replace(R.id.fragment_container, (Fragment) fragment)
                     .commit();
+            return true;
         }
+        return false;
     }
 
     @Override
@@ -78,7 +87,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 fragment = new MoreFragment();
                 break;
         }
-        loadFragment(fragment);
-        return true;
+        return loadFragment(fragment);
     }
 }
