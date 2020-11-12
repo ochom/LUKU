@@ -51,19 +51,6 @@
                     android:background="@drawable/selectable_background"
                     android:button="@null"
                     android:gravity="center_horizontal"/>
-
-                <RadioButton
-                    android:id="@+id/any"
-                    android:layout_marginTop="20dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingVertical="10dp"
-                    android:text="Any"
-                    android:textSize="25sp"
-                    android:background="@drawable/selectable_background"
-                    android:button="@null"
-                    android:gravity="center_horizontal"
-                    />
             </RadioGroup>
 
             <Button

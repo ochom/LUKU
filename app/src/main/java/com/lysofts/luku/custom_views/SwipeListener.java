@@ -1,7 +1,6 @@
-package com.lysofts.luku.swipe;
+package com.lysofts.luku.custom_views;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;

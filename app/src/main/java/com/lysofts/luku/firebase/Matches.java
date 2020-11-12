@@ -7,6 +7,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.lysofts.luku.models.NotificationModel;
 import com.lysofts.luku.models.UserProfile;
 
 import java.text.SimpleDateFormat;
@@ -27,6 +28,15 @@ public class Matches {
         data.put("type", type);
         data.put("time", time);
         db.child("matches").push().updateChildren(data);
+        db.child("users").child(userProfile.getId()).child("matches").child(myProfile.getId()).setValue(type);
+        db.child("users").child(myProfile.getId()).child("matches").child(userProfile.getId()).setValue(type);
+
+
+        NotificationModel notificationModel = new NotificationModel();
+        notificationModel.setTitle("New Love");
+        notificationModel.setContent("Someone has just sent you a match request. Click to find out who they are.");
+        notificationModel.setReceiver(userProfile.getId());
+        db.child("notifications/matches").push().setValue(notificationModel);
     }
 
     public static void confirmMatch(final String senderId, final String receiverId) {
@@ -53,5 +63,13 @@ public class Matches {
 
             }
         });
+
+
+
+        NotificationModel notificationModel = new NotificationModel();
+        notificationModel.setTitle("Congratulations");
+        notificationModel.setContent("We have found a match for you. Chat With them Here.");
+        notificationModel.setReceiver(senderId);
+        db.child("notifications/matches").push().setValue(notificationModel);
     }
 }

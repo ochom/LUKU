@@ -55,13 +55,31 @@ public class NotificationService extends Service {
     }
 
     private void getNewMessageNotifications() {
-        db.child("notifications").addValueEventListener(new ValueEventListener() {
+        db.child("notifications/chats").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot dataSnapshot:snapshot.getChildren()){
                     NotificationModel model = dataSnapshot.getValue(NotificationModel.class);
                     if (model.getReceiver().equals(FirebaseAuth.getInstance().getUid())){
-                        createNotification(model);
+                        createNotification(model, "chats");
+                        snapshot.getRef().setValue(null);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        db.child("notifications/matches").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot dataSnapshot:snapshot.getChildren()){
+                    NotificationModel model = dataSnapshot.getValue(NotificationModel.class);
+                    if (model.getReceiver().equals(FirebaseAuth.getInstance().getUid())){
+                        createNotification(model, "matches");
                         snapshot.getRef().setValue(null);
                     }
                 }
@@ -74,24 +92,16 @@ public class NotificationService extends Service {
         });
     }
 
-    private void createNotification(NotificationModel model) {
+    private void createNotification(NotificationModel model, String fragment) {
         UserProfile myProfile = new MyProfile(this).getProfile();
         Intent intent = new Intent(this, MainActivity.class);
-        intent.putExtra("fragment", "chats");
+        intent.putExtra("fragment", fragment);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
-        Bitmap image = null;
-//        try{
-//            URL url = new URL(myProfile.getImage());
-//            image = BitmapFactory.decodeStream(url.openConnection().getInputStream());
-//        }catch (Exception ex){
-//            ex.printStackTrace();
-//        }
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, model.getReceiver())
                 .setSmallIcon(R.drawable.ic_baseline_favorite_received_24)
-                .setContentTitle(new MyProfile(this).getProfile().getName())
+                .setContentTitle(model.getTitle())
                 .setContentText(model.getContent())
-                .setLargeIcon(image)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true);

@@ -1,5 +1,7 @@
 package com.lysofts.luku.firebase;
 
+import android.content.Context;
+
 import androidx.annotation.NonNull;
 
 import com.google.firebase.database.DataSnapshot;
@@ -7,6 +9,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.lysofts.luku.local.MyProfile;
 import com.lysofts.luku.models.Message;
 import com.lysofts.luku.models.NotificationModel;
 import com.lysofts.luku.models.UserProfile;
@@ -29,7 +32,7 @@ public class Chats {
         db.child("chats").child(otherUser.getId()).child(myProfile.getId()).child("profile").setValue(myProfile);
     }
 
-    public  void sendMessage(String myId, String userId, String text) {
+    public  void sendMessage(String myId, String userId, String text, String title) {
         db =  FirebaseDatabase.getInstance().getReference();
         SimpleDateFormat simpleDF = new SimpleDateFormat("yyyyMMddHHmmss");
         String time = simpleDF.format(new Date());
@@ -47,10 +50,10 @@ public class Chats {
 
         //send notification
         NotificationModel notificationModel = new NotificationModel();
-        notificationModel.setTitle("New Message");
+        notificationModel.setTitle(title);
         notificationModel.setContent(text);
         notificationModel.setReceiver(userId);
-        db.child("notifications").push().setValue(notificationModel);
+        db.child("notifications/chats").push().setValue(notificationModel);
     }
 
     public  Map<DatabaseReference, ValueEventListener> markMessagesAsRead(final String myId, final String userId) {

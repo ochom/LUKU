@@ -18,14 +18,12 @@ import com.lysofts.luku.SignUp;
 public class InterestFragment extends Fragment {
     Button btnContinue;
     RadioGroup radioGroup;
-    RadioButton checkedButton;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_interested_in, container, false);btnContinue = v.findViewById(R.id.btn_continue);
         radioGroup = v.findViewById(R.id.gender_choice_radio_group);
-        //checkedButton = v.findViewById(radioGroup.getCheckedRadioButtonId());
         return v;
     }
 
@@ -38,14 +36,12 @@ public class InterestFragment extends Fragment {
                 String interestedIn = "";
                 int id = radioGroup.getCheckedRadioButtonId();
                 switch (id){
-                    case  R.id.women:
-                        interestedIn = "women";
-                        break;
                     case  R.id.men:
                         interestedIn = "men";
                         break;
+                    case  R.id.women:
                     default:
-                        interestedIn = "any";
+                        interestedIn = "women";
                         break;
                 }
                 ((SignUp) getActivity()).setInterestedIn(interestedIn);

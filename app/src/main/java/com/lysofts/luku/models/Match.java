@@ -6,7 +6,7 @@ import java.util.Map;
 public class Match implements Serializable {
     UserProfile sender;
     UserProfile receiver;
-    String status, type;
+    String status, type, time;
 
     public Match() {
     }
@@ -41,5 +41,13 @@ public class Match implements Serializable {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
     }
 }

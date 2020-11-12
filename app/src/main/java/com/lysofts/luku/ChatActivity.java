@@ -26,6 +26,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.lysofts.luku.R;
 import com.lysofts.luku.adapters.MessagesAdapter;
 import com.lysofts.luku.firebase.Chats;
+import com.lysofts.luku.local.MyProfile;
 import com.lysofts.luku.models.Match;
 import com.lysofts.luku.models.Message;
 import com.squareup.picasso.Picasso;
@@ -103,7 +104,7 @@ public class ChatActivity extends AppCompatActivity {
     private View.OnClickListener sendMessage = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-        new Chats().sendMessage(mAuth.getUid(), userId, txtMessage.getText().toString());
+        new Chats().sendMessage(mAuth.getUid(), userId, txtMessage.getText().toString(),new MyProfile(ChatActivity.this).getProfile().getName());
         txtMessage.setText("");
         }
     };

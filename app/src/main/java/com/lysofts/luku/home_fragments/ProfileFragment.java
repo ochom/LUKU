@@ -24,6 +24,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -44,6 +46,7 @@ import com.lysofts.luku.PhotoviewerActivity;
 import com.lysofts.luku.R;
 import com.lysofts.luku.SettingsActivity;
 import com.lysofts.luku.SignUp;
+import com.lysofts.luku.adapters.UploadsAdapter;
 import com.lysofts.luku.local.MyProfile;
 import com.lysofts.luku.models.Match;
 import com.lysofts.luku.models.Upload;
@@ -70,24 +73,23 @@ public class ProfileFragment extends Fragment{
     DatabaseReference databaseReference;
     StorageReference storageReference;
     UserProfile userProfile;
-    List<Upload> uploadList = new ArrayList<>();
+    List<Upload> uploadList;
 
     CircleImageView profilePic;
     ImageView editProfilePic;
     TextView tvName, tvTitle, tvSent, tvReceived, tvMatched;
     LinearLayout uploadsLayout;
     ProgressBar progressBar;
-    LinearLayout profileLayout;
     Button btnAddPic, btnEditProfile, btnSignOut;
 
-    String clickedImage;
+    RecyclerView recyclerView;
+    UploadsAdapter adapter;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_profile,  container, false);
         progressBar = v.findViewById(R.id.progress_circular);
-        profileLayout = v.findViewById(R.id.profile);
         btnAddPic = v.findViewById(R.id.btn_add_pic);
         btnEditProfile = v.findViewById(R.id.btn_edit_profile);
         profilePic = v.findViewById(R.id.profile_pic);
@@ -99,6 +101,9 @@ public class ProfileFragment extends Fragment{
         tvMatched = v.findViewById(R.id.tvMatched);
         uploadsLayout = v.findViewById(R.id.uploadsLayout);
         btnSignOut = v.findViewById(R.id.btn_sign_out);
+
+
+        recyclerView = v.findViewById(R.id.uploadsList);
         return v;
     }
 
@@ -111,9 +116,10 @@ public class ProfileFragment extends Fragment{
         databaseReference = FirebaseDatabase.getInstance().getReference();
         storageReference = FirebaseStorage.getInstance().getReference();
 
-        loadMatches();
+        monitorOnlineAccount();
+        getMatches();
 
-        //loadUploads();
+        getUploads();
         btnEditProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -122,7 +128,7 @@ public class ProfileFragment extends Fragment{
         });
     }
 
-    private void loadMatches() {
+    private void getMatches() {
         databaseReference.child("matches").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -154,18 +160,40 @@ public class ProfileFragment extends Fragment{
         });
     }
 
-    private void loadUploads() {
+    private void getUploads() {
+        GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 3);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setHasFixedSize(true);
         databaseReference.child("users").child(mAuth.getUid()).child("uploads").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot snapshot1: snapshot.getChildren()){
-                    Upload upload = snapshot1.getValue(Upload.class);
+                uploadList = new ArrayList<>();
+                for (DataSnapshot dataSnapshot: snapshot.getChildren()){
+                    Upload upload = dataSnapshot.getValue(Upload.class);
                     uploadList.add(upload);
                 }
-                manageUploads();
+                adapter = new UploadsAdapter(getActivity(), uploadList);
+                recyclerView.setAdapter(adapter);
+
                 progressBar.setVisibility(View.GONE);
-                profileLayout.setVisibility(View.VISIBLE);
             }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    private void monitorOnlineAccount(){
+        databaseReference.child("users").child(userProfile.getId()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                userProfile = snapshot.getValue(UserProfile.class);
+                if (userProfile !=null){
+                    updateUI();
+                }
+            }
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 
@@ -200,32 +228,7 @@ public class ProfileFragment extends Fragment{
         startActivityForResult(intent, 443);
     }
 
-    private void manageUploads() {
-        uploadsLayout.removeAllViews();
-        if(getActivity()!=null){
-            LayoutInflater inf = LayoutInflater.from(getActivity());
-            View child;
-            if (uploadList != null && uploadList.size()>=3){
-                btnAddPic.setVisibility(View.GONE);
-            }else{
-                btnAddPic.setVisibility(View.VISIBLE);
-            }
-
-            for (Upload upload:uploadList){
-                child = inf.inflate(R.layout.profile_upload_design, null);
-                ImageView imageView = child.findViewById(R.id.upload_pic);
-                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                Picasso.get().load(upload.getImage()).into(imageView);
-                TextView tvClaps = child.findViewById(R.id.claps);
-                tvClaps.setText(String.valueOf(upload.getClaps()));
-                child.setOnClickListener(viewImage(upload.getImage()));
-                child.setOnLongClickListener(editUpload(upload.getId()));
-                uploadsLayout.addView(child);
-            }
-        }
-    }
-
-    private View.OnClickListener viewImage(final String image) {
+    public View.OnClickListener viewImage(final String image) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -235,56 +238,6 @@ public class ProfileFragment extends Fragment{
             }
         };
     }
-
-    private View.OnLongClickListener editUpload(final String id) {
-        clickedImage = id;
-        return  new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                PopupMenu popup = new PopupMenu(getActivity(), view);
-                MenuInflater inflater = popup.getMenuInflater();
-                inflater.inflate(R.menu.edit_image_choices, popup.getMenu());
-                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        switch (item.getItemId()) {
-                            case R.id.delete:
-                                deleteImage();
-                                return true;
-                            default:
-                                return false;
-                        }
-                    }
-                });
-                popup.show();
-                return false;
-            }
-        };
-    }
-
-    private void deleteImage() {
-        databaseReference.child("users").child(mAuth.getUid()).child("uploads").child(clickedImage).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (task.isSuccessful()){
-                    Log.d("DELETED:::DB", clickedImage);
-                    storageReference.child("uploads").child(clickedImage+".jpg").delete().addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if (task.isSuccessful()){
-                                Log.d("DELETED:::STORE", clickedImage+".jpg");
-                            }else{
-                                Toast.makeText(getContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    });
-                }else{
-                    Toast.makeText(getContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-    }
-
 
     private void selectUploadImage() {
         Intent intent = CropImage.activity()

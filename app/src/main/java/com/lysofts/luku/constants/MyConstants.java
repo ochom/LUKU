@@ -14,7 +14,6 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class MyConstants {
-    @RequiresApi(api = Build.VERSION_CODES.O)
     public static int getAge(String dob) {
         int age=0;
         try {
@@ -25,10 +24,13 @@ public class MyConstants {
             int year = c.get(Calendar.YEAR);
             int month = c.get(Calendar.MONTH) + 1;
             int date = c.get(Calendar.DATE);
-            LocalDate l1 = LocalDate.of(year, month, date);
-            LocalDate now1 = LocalDate.now();
-            Period diff1 = Period.between(l1, now1);
-            age = diff1.getYears();
+            LocalDate l1 = null;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                l1 = LocalDate.of(year, month, date);
+                LocalDate now1 = LocalDate.now();
+                Period diff1 = Period.between(l1, now1);
+                age = diff1.getYears();
+            }
         } catch (ParseException e) {
             e.printStackTrace();
         }

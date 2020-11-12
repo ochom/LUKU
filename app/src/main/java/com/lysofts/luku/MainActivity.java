@@ -27,15 +27,28 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         setContentView(R.layout.activity_main);
         mAuth = FirebaseAuth.getInstance();
 
+        bottomNavigationView = findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setOnNavigationItemSelectedListener(this);
+
         if (savedInstanceState==null){
             createFragment(new HomeFragment());
+            bottomNavigationView.setSelectedItemId(R.id.nav_home);
         }
 
         Intent intent = new Intent(this, NotificationService.class);
         startService(intent);
 
-        bottomNavigationView = findViewById(R.id.bottom_navigation);
-        bottomNavigationView.setOnNavigationItemSelectedListener(this);
+        String fra = getIntent().getStringExtra("fragment");
+        if (fra != null){
+            if(fra.equals("chats")){
+                loadFragment(new ChatsFragment());
+                bottomNavigationView.setSelectedItemId(R.id.nav_chats);
+            }
+            if(fra.equals("matches")){
+                loadFragment(new MatchesFragment());
+                bottomNavigationView.setSelectedItemId(R.id.nav_matches);
+            }
+        }
     }
 
     private void createFragment(Object fragment){

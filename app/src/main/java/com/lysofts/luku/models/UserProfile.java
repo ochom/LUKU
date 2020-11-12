@@ -1,10 +1,7 @@
 package com.lysofts.luku.models;
 
-import java.util.Map;
-
 public class UserProfile {
     String id, name, profession, title, email, birthday,sex, interestedIn, phone, image;
-    Map<String, Upload> uploads;
 
     public UserProfile() {
     }
@@ -87,15 +84,6 @@ public class UserProfile {
 
     public void setImage(String image) {
         this.image = image;
-    }
-
-
-    public Map<String, Upload> getUploads() {
-        return uploads;
-    }
-
-    public void setUploads(Map<String, Upload> uploads) {
-        this.uploads = uploads;
     }
 
 }

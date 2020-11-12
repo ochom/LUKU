@@ -2,24 +2,19 @@ package com.lysofts.luku.home_fragments;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
-import android.widget.ViewFlipper;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
-import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
+import com.daprlabs.cardstack.SwipeDeck;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -27,45 +22,38 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.lysofts.luku.R;
-import com.lysofts.luku.constants.MyConstants;
+import com.lysofts.luku.adapters.SwipeDeckAdapter;
 import com.lysofts.luku.firebase.Matches;
 import com.lysofts.luku.local.MyProfile;
+import com.lysofts.luku.models.SwipeModel;
 import com.lysofts.luku.models.Upload;
 import com.lysofts.luku.models.UserProfile;
-import com.lysofts.luku.swipe.SwipeListener;
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import jp.shts.android.storiesprogressview.StoriesProgressView;
 
 public class HomeFragment  extends Fragment {
     DatabaseReference databaseReference;
     FirebaseAuth mAuth;
-    List<UserProfile> users = new ArrayList<>();
-    ViewFlipper viewFlipper;
-    CardView cardView;
 
+    TextView tvLoading;
+    ImageButton btnLike, btnDislike;
+
+    SwipeDeck swipeDeck;
+
+    String TAG = "LUKU>>> ";
     UserProfile myProfile;
-
-    private Animation slideLeftIn;
-    private Animation slideLeftOut;
-
-
-    int counter = 0;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_home, container, false);
-        viewFlipper = v.findViewById(R.id.viewFlipper);
-        slideLeftIn = AnimationUtils.loadAnimation(getContext(), R.anim.stream_flipper_slidein_from_right);
-        slideLeftOut = AnimationUtils.loadAnimation(getContext(), R.anim.stream_flipper_slideout_to_left);
-        viewFlipper.setInAnimation(slideLeftIn);
-        viewFlipper.setOutAnimation(slideLeftOut);
+        swipeDeck = v.findViewById(R.id.swipe_deck);
+        tvLoading = v.findViewById(R.id.tvLoading);
+        btnLike = v.findViewById(R.id.btnLike);
+        btnDislike = v.findViewById(R.id.btnDislike);
         return v;
     }
 
@@ -76,172 +64,137 @@ public class HomeFragment  extends Fragment {
         mAuth =  FirebaseAuth.getInstance();
         myProfile = new MyProfile(getActivity()).getProfile();
 
-        loadUsers();
+        btnLike.setVisibility(View.GONE);
+        btnDislike.setVisibility(View.GONE);
+        getAUser();
+
+        btnLike.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                swipeDeck.swipeTopCardLeft(2000);
+            }
+        });
+
+        btnDislike.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                swipeDeck.swipeTopCardRight(2000);
+            }
+        });
     }
 
-    private void loadUsers() {
-        databaseReference.child("users").addValueEventListener(new ValueEventListener() {
+    private void getAUser() {
+        databaseReference.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                int i=0;
+                List<SwipeModel> models = new ArrayList<>();
                 for(DataSnapshot snapshot1: snapshot.getChildren()){
+
+                    if (i==30){return;}
+
                     UserProfile  user = snapshot1.getValue(UserProfile.class);
-                    if (!user.getId().equals(mAuth.getUid())){
-                        if (user.getSex().equals("man") && myProfile.getInterestedIn().equals("men")){
-                            users.add(user);
-                        }else if (user.getSex().equals("woman") && myProfile.getInterestedIn().equals("women")){
-                            users.add(user);
-                        }else if (myProfile.getInterestedIn().equals("any")){
-                            users.add(user);
+                    List<Upload> uploads = new ArrayList<>();
+                    Map<String, String> matches = new HashMap<>();
+
+                    if (snapshot1.child("uploads") != null){
+                        for (DataSnapshot snapshot2:snapshot1.child("uploads").getChildren()){
+                            Upload upload = snapshot2.getValue(Upload.class);
+                            uploads.add(upload);
+                        }
+                    }
+
+                    if (snapshot1.child("matches") != null){
+                        for (DataSnapshot snapshot2:snapshot1.child("matches").getChildren()){
+                            matches.put(snapshot2.getKey(), snapshot2.getValue(String.class));
+                        }
+                    }
+
+                    assert user != null;
+                    if (!user.getId().equals(mAuth.getUid()) && !matches.containsKey(mAuth.getUid())){
+                        String userSex, userInterest, mySex, myInterest;
+                        userSex = user.getSex();
+                        userInterest = user.getInterestedIn();
+                        mySex = myProfile.getSex();
+                        myInterest = myProfile.getInterestedIn();
+
+
+                        if (mySex.equals("man") && myInterest.equals("men") && userSex.equals("man") && userInterest.equals("men")){
+                            i++;
+                            models.add(new SwipeModel(user, uploads));
+                            createFlipper(models);
+                        }else if (mySex.equals("man") && myInterest.equals("women") && userSex.equals("woman") && userInterest.equals("men")){
+                            i++;
+                            models.add(new SwipeModel(user, uploads));
+                            createFlipper(models);
+                        }else if (mySex.equals("woman") && myInterest.equals("women") && userSex.equals("woman") && userInterest.equals("women")){
+                            i++;
+                            models.add(new SwipeModel(user, uploads));
+                            createFlipper(models);
+                        }else if (mySex.equals("woman") && myInterest.equals("men") && userSex.equals("man") && userInterest.equals("women")){
+                            i++;
+                            models.add(new SwipeModel(user, uploads));
+                            createFlipper(models);
                         }
                     }
                 }
-                createFlipper();
+
+                if (models.size()==0){
+                    tvLoading.setVisibility(View.VISIBLE);
+                    tvLoading.setText("No more people of your Taste.");
+                    btnLike.setVisibility(View.GONE);
+                    btnDislike.setVisibility(View.GONE);
+                }else{
+                    tvLoading.setVisibility(View.GONE);
+                    btnLike.setVisibility(View.VISIBLE);
+                    btnDislike.setVisibility(View.VISIBLE);
+                }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                tvLoading.setVisibility(View.VISIBLE);
+                tvLoading.setText("Error occurred while loading people.");
+                btnLike.setVisibility(View.GONE);
+                btnDislike.setVisibility(View.GONE);
             }
         });
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    private void createFlipper() {
-        if(users !=null && users.size()>0 && getActivity()!=null){
-            for(final UserProfile user: users){
-                LayoutInflater inflater = LayoutInflater.from(getActivity());
-                View view = inflater.inflate(R.layout.person_preview, null);
-                cardView = view.findViewById(R.id.user_preview);
-                TextView txtName = view.findViewById(R.id.txtName);
-                TextView txtTitle = view.findViewById(R.id.txtTitle);
-                final ProgressBar progressBar = view.findViewById(R.id.progress_circular);
-                final ImageView imageView = view.findViewById(R.id.image);
-                View btnPrev = view.findViewById(R.id.btnPrev);
-                View btnNext = view.findViewById(R.id.btnNext);
-
-                ImageButton btnLike = view.findViewById(R.id.btnLike);
-                ImageButton btnDislike = view.findViewById(R.id.btnDislike);
-
-                final StoriesProgressView storiesProgressView = view.findViewById(R.id.stories);
-
-                final List<Upload> uploads = new ArrayList<>();
-                if(user.getUploads()!=null && user.getUploads().size()>0){
-                    for(Map.Entry<String, Upload> entry :  user.getUploads().entrySet()){
-                        Upload upload = entry.getValue();
-                        uploads.add(upload);
-                    }
-                }
-                int age = MyConstants.getAge(user.getBirthday());
-                txtName.setText(user.getName()+", "+age);
-                txtTitle.setText(user.getTitle());
-                createStories(view, uploads, storiesProgressView, imageView, progressBar, btnPrev, btnNext);
-                btnLike.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                    Matches.sendMatchRequest(new MyProfile(getActivity()).getProfile(), user, "like");
-                    }
-                });
-
-                btnDislike.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                    Matches.sendMatchRequest(new MyProfile(getActivity()).getProfile(), user, "dislike");
-                    }
-                });
-            }
-        }
-        handleSwipes();
-    }
-
-    private void createStories(final View view, final List<Upload> uploads, final StoriesProgressView storiesProgressView,
-                               final ImageView imageView, final ProgressBar progressBar, final View btnPrev, final View btnNext) {
-        if(uploads!=null && uploads.size()>0){
-            viewFlipper.removeAllViews();
-            counter=0;
-            storiesProgressView.setStoriesCount(uploads.size());
-            storiesProgressView.setStoryDuration(15000L);
-            picassoLoad(uploads.get(counter).getImage(), imageView, progressBar);
-            storiesProgressView.startStories();
-            storiesProgressView.setStoriesListener(new StoriesProgressView.StoriesListener() {
-                @Override
-                public void onNext() {
-                    if(counter < uploads.size()){
-                        counter++;
-                        picassoLoad(uploads.get(counter).getImage(), imageView, progressBar);
-                    }else{
-                        createStories(view, uploads, storiesProgressView, imageView, progressBar, btnPrev, btnNext);
-                    }
-                }
-
-                @Override
-                public void onPrev() {
-                    if(counter > 0){
-                        counter--;
-                        picassoLoad(uploads.get(counter).getImage(), imageView, progressBar);
-                    }else{
-                        createStories(view, uploads, storiesProgressView, imageView, progressBar, btnPrev, btnNext);
-                    }
-                }
-
-                @Override
-                public void onComplete() {
-                    createStories(view, uploads, storiesProgressView, imageView, progressBar, btnPrev, btnNext);
-                }
-            });
-
-            viewFlipper.addView(view);
-            btnPrev.setOnClickListener(new View.OnClickListener(){
-                @Override
-                public void onClick(View view) {
-                    storiesProgressView.reverse();
-                }
-            });
-            btnNext.setOnClickListener(new View.OnClickListener(){
-                @Override
-                public void onClick(View view) {
-                    storiesProgressView.skip();
-                }
-            });
-
-        }
-    }
-
-    private void picassoLoad(String src, final ImageView imageView, final ProgressBar progressBar){
-        progressBar.setVisibility(View.VISIBLE);
-        Picasso.get().load(src).into(imageView, new Callback() {
+    private void createFlipper(final List<SwipeModel> models) {
+        SwipeDeckAdapter adapter = new SwipeDeckAdapter(getActivity(), models);
+        swipeDeck.setAdapter(adapter);
+        swipeDeck.setHardwareAccelerationEnabled(true);
+        swipeDeck.setEventCallback(new SwipeDeck.SwipeEventCallback() {
             @Override
-            public void onSuccess() {
-                progressBar.setVisibility(View.GONE);
+            public void cardSwipedLeft(int position) {
+                Log.i("MainActivity", "card was swiped left, position in adapter: " + position);
+                Matches.sendMatchRequest(new MyProfile(getActivity()).getProfile(), models.get(position).getUser(), "like");
             }
 
             @Override
-            public void onError(Exception e) {
+            public void cardSwipedRight(int position) {
+                Log.i("MainActivity", "card was swiped right, position in adapter: " + position);
+                Matches.sendMatchRequest(new MyProfile(getActivity()).getProfile(), models.get(position).getUser(), "dislike");
+            }
 
-            }
-        });
-    }
-
-    private void handleSwipes() {
-        viewFlipper.setOnTouchListener(new SwipeListener(getContext()){
-            public void onSwipeTop() {
-                Toast.makeText(getContext(), "top", Toast.LENGTH_SHORT).show();
-            }
-            public void onSwipeRight() {
-                viewFlipper.showPrevious();
-                Toast.makeText(getContext(), "right", Toast.LENGTH_SHORT).show();
-            }
-            public void onSwipeLeft() {
-                viewFlipper.showNext();
-                Toast.makeText(getContext(), "left", Toast.LENGTH_SHORT).show();
-            }
-            public void onSwipeBottom() {
-                Toast.makeText(getContext(), "bottom", Toast.LENGTH_SHORT).show();
-            }
-        });
-        viewFlipper.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void cardsDepleted() {
+                Log.i("MainActivity", "no more cards");
+                tvLoading.setVisibility(View.VISIBLE);
+                tvLoading.setText("No more people of your Taste.");
+                btnLike.setVisibility(View.GONE);
+                btnDislike.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void cardActionDown() {
+
+            }
+
+            @Override
+            public void cardActionUp() {
 
             }
         });
