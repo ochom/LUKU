@@ -16,14 +16,14 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Matches"
+            android:text="@string/matches"
             android:textColor="#fff"
             android:fontFamily="cursive"
             android:textStyle="bold"
             android:textSize="25sp"/>
     </LinearLayout>
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintTop_toBottomOf="@+id/pageTitle"
@@ -37,5 +37,12 @@
             android:background="#DBFFDD">
         </androidx.recyclerview.widget.RecyclerView>
 
-    </LinearLayout>
+        <TextView
+            android:id="@+id/tvLoading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="@string/getting_matches"/>
+
+    </RelativeLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

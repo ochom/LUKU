@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -28,6 +29,7 @@ public class ChatsFragment  extends Fragment {
     FirebaseAuth mAth;
     DatabaseReference databaseReference;
     RecyclerView recyclerView;
+    TextView tvLoading;
 
     ChatsAdapter adapter;
 
@@ -37,6 +39,7 @@ public class ChatsFragment  extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_chats,  container, false);
         recyclerView = v.findViewById(R.id.chats_list);
+        tvLoading = v.findViewById(R.id.tvLoading);
         return v;
     }
 
@@ -65,6 +68,12 @@ public class ChatsFragment  extends Fragment {
                 }
                 adapter = new ChatsAdapter(getActivity(), chats);
                 recyclerView.setAdapter(adapter);
+                if (chats.size()==0){
+                    tvLoading.setVisibility(View.VISIBLE);
+                    tvLoading.setText("No chats found.");
+                }else{
+                    tvLoading.setVisibility(View.GONE);
+                }
             }
 
             @Override
