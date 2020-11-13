@@ -142,7 +142,7 @@ public class HomeFragment  extends Fragment {
 
                 if (models.size()==0){
                     tvLoading.setVisibility(View.VISIBLE);
-                    tvLoading.setText("No more people of your Taste.");
+                    tvLoading.setText("No new people of your Taste.");
                     btnLike.setVisibility(View.GONE);
                     btnDislike.setVisibility(View.GONE);
                 }else{

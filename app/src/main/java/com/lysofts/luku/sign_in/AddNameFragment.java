@@ -23,21 +23,20 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.app.Activity.RESULT_OK;
 
-public class AddPicFragment extends Fragment {
+public class AddNameFragment extends Fragment {
     CircleImageView circleImageView;
     ImageView imageView;
     Uri imageUri = null;
-    EditText etName,etPhone;
+    EditText etName;
     Button btnContinue;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_add_profile_pic, container, false);
+        View v = inflater.inflate(R.layout.fragment_add_name, container, false);
         circleImageView = v.findViewById(R.id.profile_pic);
         imageView = v.findViewById(R.id.edit_image);
         etName = v.findViewById(R.id.txtName);
-        etPhone = v.findViewById(R.id.txtPhone);
         btnContinue = v.findViewById(R.id.btn_continue);
         return v;
     }
@@ -59,8 +58,7 @@ public class AddPicFragment extends Fragment {
             public void onClick(View view) {
                 String name, phone;
                 name = etName.getText().toString();
-                phone = etPhone.getText().toString();
-                ((SignUp) getActivity()).completeSignUp(name, phone, imageUri);
+                ((SignUp) getActivity()).setNameAndProfilePic(name, imageUri);
             }
         });
     }

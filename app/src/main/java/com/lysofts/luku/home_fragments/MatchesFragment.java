@@ -70,7 +70,7 @@ public class MatchesFragment   extends Fragment {
                 recyclerView.setAdapter(adapter);
                 if (matches.size()==0){
                     tvLoading.setVisibility(View.VISIBLE);
-                    tvLoading.setText("No chats found.");
+                    tvLoading.setText("No matches found.");
                 }else{
                     tvLoading.setVisibility(View.GONE);
                 }

@@ -23,7 +23,7 @@
         app:showAsAction="always"/>
 
     <item android:id="@+id/nav_more"
-        android:title="More"
+        android:title="About"
         android:icon="@drawable/ic_baseline_more_horiz_24"
         app:showAsAction="always"/>
 </menu>

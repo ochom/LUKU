@@ -61,7 +61,7 @@ public class NotificationService extends Service {
                 for (DataSnapshot dataSnapshot:snapshot.getChildren()){
                     NotificationModel model = dataSnapshot.getValue(NotificationModel.class);
                     if (model.getReceiver().equals(FirebaseAuth.getInstance().getUid())){
-                        createNotification(model, "chats");
+                        createNotification(model, "chats", 440044);
                         snapshot.getRef().setValue(null);
                     }
                 }
@@ -79,7 +79,26 @@ public class NotificationService extends Service {
                 for (DataSnapshot dataSnapshot:snapshot.getChildren()){
                     NotificationModel model = dataSnapshot.getValue(NotificationModel.class);
                     if (model.getReceiver().equals(FirebaseAuth.getInstance().getUid())){
-                        createNotification(model, "matches");
+                        createNotification(model, "matches", 440000);
+                        snapshot.getRef().setValue(null);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+
+        db.child("notifications/new_people").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot dataSnapshot:snapshot.getChildren()){
+                    NotificationModel model = dataSnapshot.getValue(NotificationModel.class);
+                    if (model.getReceiver().equals(FirebaseAuth.getInstance().getUid())){
+                        createNotification(model, "home",440022);
                         snapshot.getRef().setValue(null);
                     }
                 }
@@ -92,7 +111,7 @@ public class NotificationService extends Service {
         });
     }
 
-    private void createNotification(NotificationModel model, String fragment) {
+    private void createNotification(NotificationModel model, String fragment, int notificationId) {
         UserProfile myProfile = new MyProfile(this).getProfile();
         Intent intent = new Intent(this, MainActivity.class);
         intent.putExtra("fragment", fragment);
@@ -117,7 +136,7 @@ public class NotificationService extends Service {
         }
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
-        notificationManager.notify(createID(), builder.build());
+        notificationManager.notify(notificationId, builder.build());
 
     }
 

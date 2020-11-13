@@ -99,6 +99,7 @@
                 android:layout_marginBottom="0dp"
                 android:gravity="center"
                 android:orientation="horizontal">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -110,7 +111,6 @@
                     android:layout_marginLeft="20dp"
                     android:layout_width="20dp"
                     android:onClick="facebookLogin"
-                    android:src="@drawable/com_facebook_favicon_blue"
                     android:layout_height="20dp"/>
 
                 <ImageView

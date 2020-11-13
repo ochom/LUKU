@@ -8,6 +8,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.lysofts.luku.models.NotificationModel;
+import com.lysofts.luku.models.SwipeModel;
 import com.lysofts.luku.models.UserProfile;
 
 import java.text.SimpleDateFormat;
@@ -71,5 +72,43 @@ public class Matches {
         notificationModel.setContent("We have found a match for you. Chat With them Here.");
         notificationModel.setReceiver(senderId);
         db.child("notifications/matches").push().setValue(notificationModel);
+    }
+
+    public static  void sendNewUsers(String myId, final String mySex, final String myInterest){
+        final DatabaseReference db =  FirebaseDatabase.getInstance().getReference();
+        db.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot dataSnapshot: snapshot.getChildren()){
+                    UserProfile user = dataSnapshot.getValue(UserProfile.class);
+                    String userSex, userInterest;
+                    userSex = user.getSex();
+                    userInterest = user.getInterestedIn();
+                    if (mySex.equals("man") && myInterest.equals("men") && userSex.equals("man") && userInterest.equals("men")){
+                        createNewUserNotification(user.getId());
+                    }else if (mySex.equals("man") && myInterest.equals("women") && userSex.equals("woman") && userInterest.equals("men")){
+                        createNewUserNotification(user.getId());
+                    }else if (mySex.equals("woman") && myInterest.equals("women") && userSex.equals("woman") && userInterest.equals("women")){
+                        createNewUserNotification(user.getId());
+                    }else if (mySex.equals("woman") && myInterest.equals("men") && userSex.equals("man") && userInterest.equals("women")){
+                        createNewUserNotification(user.getId());
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    private static void createNewUserNotification(String id) {
+        final DatabaseReference db =  FirebaseDatabase.getInstance().getReference();
+        NotificationModel notificationModel = new NotificationModel();
+        notificationModel.setTitle("New user");
+        notificationModel.setContent("Hello there, A new user who you may be interested in has just sign up.");
+        notificationModel.setReceiver(id);
+        db.child("notifications/new_people").push().setValue(notificationModel);
     }
 }

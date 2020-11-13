@@ -40,11 +40,13 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
         String fra = getIntent().getStringExtra("fragment");
         if (fra != null){
-            if(fra.equals("chats")){
+            if(fra.equals("home")){
+                loadFragment(new HomeFragment());
+                bottomNavigationView.setSelectedItemId(R.id.nav_home);
+            } else if(fra.equals("chats")){
                 loadFragment(new ChatsFragment());
                 bottomNavigationView.setSelectedItemId(R.id.nav_chats);
-            }
-            if(fra.equals("matches")){
+            }else if(fra.equals("matches")){
                 loadFragment(new MatchesFragment());
                 bottomNavigationView.setSelectedItemId(R.id.nav_matches);
             }

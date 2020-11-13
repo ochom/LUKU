@@ -67,23 +67,10 @@
             android:singleLine="true"
             android:textSize="25sp" />
 
-        <EditText
-            android:id="@+id/txtPhone"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:gravity="center_horizontal"
-            android:hint="+25400000000"
-            android:background="@drawable/text_input_background"
-            android:fontFamily="sans-serif"
-            android:paddingVertical="10dp"
-            android:singleLine="true"
-            android:textSize="25sp" />
-
         <Button
             android:id="@+id/btn_continue"
             android:layout_marginTop="50dp"
-            android:text="FINISH"
+            android:text="Next"
             android:textColor="@color/white"
             android:background="@drawable/button_design_bg"
             android:layout_width="match_parent"
