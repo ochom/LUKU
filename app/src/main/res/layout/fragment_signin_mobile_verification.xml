@@ -33,11 +33,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="59"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="50sp"
             app:layout_constraintBottom_toTopOf="@+id/linearLayout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            android:textColor="@color/colorPrimaryDark"
-            android:textSize="50sp"
             app:layout_constraintTop_toBottomOf="@+id/tvTitle" />
 
 
@@ -47,7 +47,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="30dp"
             android:paddingHorizontal="10dp"
-            app:layout_constraintBottom_toTopOf="@+id/btn_sign_in"
+            app:layout_constraintBottom_toTopOf="@+id/btn_submit"
             app:layout_constraintEnd_toEndOf="parent"
             android:background="@drawable/text_input_background"
             app:layout_constraintStart_toStartOf="parent">
@@ -67,7 +67,22 @@
         </LinearLayout>
 
         <Button
-            android:id="@+id/btn_sign_in"
+            android:id="@+id/btn_resendCode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/box_outline"
+            android:paddingHorizontal="20dp"
+            android:paddingVertical="10dp"
+            android:layout_marginBottom="0dp"
+            android:text="Resend code"
+            android:textColor="@color/colorPrimary"
+            app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvTitle" />
+
+        <Button
+            android:id="@+id/btn_submit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/button_solid"

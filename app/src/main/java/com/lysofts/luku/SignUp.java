@@ -61,6 +61,9 @@ public class SignUp extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private StorageReference storageReference;
     private DatabaseReference databaseReference;
+    String mVerificationId;
+    PhoneAuthProvider.ForceResendingToken mResendToken;
+
     String name, profession, title, birthday,sex, interestedIn, phone, image;
     Uri imageUri, firstUpload;
 
@@ -115,49 +118,49 @@ public class SignUp extends AppCompatActivity {
 
     public void signInWithPhone(String phoneNumber) {
         this.phone = phoneNumber;
-//        phone = cleanPhone(phone);
-//        if (phone.length()<9){
-//            return;
-//        }
+//        phone = "797969142";
+        phone = cleanPhone(phone);
+        if (phone.length()<9){
+            return;
+        }
         progressDialog.setTitle("Processing");
         progressDialog.setMessage("Please wait...");
         if (!progressDialog.isShowing()){
             progressDialog.show();
         }
-//        String phoneNumber = "+254"+phone;
-//        PhoneAuthOptions options =
-//                PhoneAuthOptions.newBuilder(mAuth)
-//                        .setPhoneNumber(phoneNumber)
-//                        .setTimeout(60L, TimeUnit.SECONDS)
-//                        .setActivity(this)
-//                        .setCallbacks(mCallbacks())
-//                        .build();
-//        PhoneAuthProvider.verifyPhoneNumber(options);
+        phone = "+254"+phone;
+        Log.d(TAG, phone.equals("+254797969142")?"TRUE":"FALSE");
+        PhoneAuthOptions options =
+                PhoneAuthOptions.newBuilder(mAuth)
+                        .setPhoneNumber(phone)
+                        .setTimeout(60L, TimeUnit.SECONDS)
+                        .setActivity(this)
+                        .setCallbacks(mCallbacks())
+                        .build();
+        PhoneAuthProvider.verifyPhoneNumber(options);
 
 
         //Testing
-        phone = "+254797969142";
-        String smsCode = "111222";
-
-        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-        FirebaseAuthSettings firebaseAuthSettings = firebaseAuth.getFirebaseAuthSettings();
-
-        // Configure faking the auto-retrieval with the whitelisted numbers.
-        firebaseAuthSettings.setAutoRetrievedSmsCodeForPhoneNumber(phone, smsCode);
-
-        PhoneAuthOptions options = PhoneAuthOptions.newBuilder(firebaseAuth)
-                .setPhoneNumber(phone)
-                .setTimeout(60L, TimeUnit.SECONDS)
-                .setActivity(this)
-                .setCallbacks(mCallbacks())
-                .build();
-        PhoneAuthProvider.verifyPhoneNumber(options);
+//        String smsCode = "111222";
+//
+//        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+//        FirebaseAuthSettings firebaseAuthSettings = firebaseAuth.getFirebaseAuthSettings();
+//
+//        // Configure faking the auto-retrieval with the whitelisted numbers.
+//        firebaseAuthSettings.setAutoRetrievedSmsCodeForPhoneNumber(phone, smsCode);
+//
+//        PhoneAuthOptions options = PhoneAuthOptions.newBuilder(firebaseAuth)
+//                .setPhoneNumber(phone)
+//                .setTimeout(60L, TimeUnit.SECONDS)
+//                .setActivity(this)
+//                .setCallbacks(mCallbacks())
+//                .build();
+//        PhoneAuthProvider.verifyPhoneNumber(options);
     }
 
     private String cleanPhone(String phone) {
         phone = phone.replaceAll("\\+","").replaceAll("-","");
-
-        return phone;
+        return phone.trim();
     }
 
     public PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks(){
@@ -175,6 +178,7 @@ public class SignUp extends AppCompatActivity {
             public void onVerificationFailed(@NonNull FirebaseException e) {
                 Log.d("LUKU", "Verification failed");
                 Toast.makeText(SignUp.this, "Phone verification failed", Toast.LENGTH_SHORT).show();
+                e.printStackTrace();
                 if (progressDialog.isShowing()){
                     progressDialog.dismiss();
                 }
@@ -183,6 +187,8 @@ public class SignUp extends AppCompatActivity {
             @Override
             public void onCodeSent(@NonNull String s, @NonNull PhoneAuthProvider.ForceResendingToken forceResendingToken) {
                 super.onCodeSent(s, forceResendingToken);
+                mVerificationId = s;
+                mResendToken = forceResendingToken;
                 loadFragment(new PhoneVerificationFragment());
                 if (progressDialog.isShowing()){
                     progressDialog.dismiss();
@@ -193,12 +199,36 @@ public class SignUp extends AppCompatActivity {
             public void onCodeAutoRetrievalTimeOut(@NonNull String s) {
                 super.onCodeAutoRetrievalTimeOut(s);
                 Toast.makeText(SignUp.this, "Code auto retrieval failed", Toast.LENGTH_SHORT).show();
-                loadFragment(new SignInFragment());
+                //loadFragment(new SignInFragment());
                 if (progressDialog.isShowing()){
                     progressDialog.dismiss();
                 }
             }
         };
+    }
+
+
+    public void submitOTP(String code) {
+        PhoneAuthCredential credential = PhoneAuthProvider.getCredential(mVerificationId, code);
+        signInWithPhoneAuthCredential(credential);
+    }
+
+
+    public void resendOTP() {
+        progressDialog.setTitle("Processing");
+        progressDialog.setMessage("Please wait...");
+        if (!progressDialog.isShowing()){
+            progressDialog.show();
+        }
+        PhoneAuthOptions options =
+                PhoneAuthOptions.newBuilder(mAuth)
+                        .setPhoneNumber(phone)
+                        .setTimeout(60L, TimeUnit.SECONDS)
+                        .setActivity(this)
+                        .setCallbacks(mCallbacks())
+                        .setForceResendingToken(mResendToken)
+                        .build();
+        PhoneAuthProvider.verifyPhoneNumber(options);
     }
 
     private void signInWithPhoneAuthCredential(PhoneAuthCredential phoneAuthCredential) {
@@ -449,5 +479,4 @@ public class SignUp extends AppCompatActivity {
         data.put("claps", 0);
         databaseReference.child("users").child(mAuth.getUid()).child("uploads").child(id).updateChildren(data);
     }
-
 }

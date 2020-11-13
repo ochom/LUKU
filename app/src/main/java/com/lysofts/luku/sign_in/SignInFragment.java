@@ -45,7 +45,6 @@ public class SignInFragment extends Fragment {
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 int digits = txtPhone.getText().toString().length();
-                Log.d("LENGTH",""+digits);
                 if (!lastChar.equals("-")) {
                     if (digits == 3 || digits == 7) {
                         txtPhone.append("-");
