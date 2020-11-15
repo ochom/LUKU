@@ -10,10 +10,6 @@ public class Chat {
     public Chat() {
     }
 
-    public Chat(UserProfile profile) {
-        this.profile = profile;
-    }
-
     public UserProfile getProfile() {
         return profile;
     }

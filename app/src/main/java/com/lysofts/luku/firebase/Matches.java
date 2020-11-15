@@ -33,11 +33,16 @@ public class Matches {
         db.child("users").child(myProfile.getId()).child("matches").child(userProfile.getId()).setValue(type);
 
 
-        NotificationModel notificationModel = new NotificationModel();
-        notificationModel.setTitle("New Love");
-        notificationModel.setContent("Someone has just sent you a match request. Click to find out who they are.");
-        notificationModel.setReceiver(userProfile.getId());
-        db.child("notifications/matches").push().setValue(notificationModel);
+        new Chats().createContacts(myProfile, userProfile);
+
+
+        if(type.equals("like")){
+            NotificationModel notificationModel = new NotificationModel();
+            notificationModel.setTitle("New Love");
+            notificationModel.setContent("Someone has just sent you a match request. Click to find out who they are.");
+            notificationModel.setReceiver(userProfile.getId());
+            db.child("notifications/matches").push().setValue(notificationModel);
+        }
     }
 
     public static void confirmMatch(final String senderId, final String receiverId) {

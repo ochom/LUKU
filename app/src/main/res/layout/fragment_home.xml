@@ -38,7 +38,7 @@
         android:orientation="horizontal"
         android:padding="10dp"
         android:gravity="center">
-
+        
         <ImageButton
             android:id="@+id/btnLike"
             android:layout_width="50dp"

@@ -88,8 +88,7 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ViewHolder> 
 
         @RequiresApi(api = Build.VERSION_CODES.O)
         public void setChat(Chat chat){
-            Picasso.get().load(chat.getProfile()
-                    .getImage())
+            Picasso.get().load(chat.getProfile().getImage())
                     .placeholder(R.drawable.ic_baseline_account_circle_24).into(imgProfile);
             tvName.setText(chat.getProfile().getName());
             tvLastMessage.setText("No chats yet");

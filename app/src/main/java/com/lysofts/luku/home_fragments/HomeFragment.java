@@ -166,6 +166,8 @@ public class HomeFragment  extends Fragment {
         SwipeDeckAdapter adapter = new SwipeDeckAdapter(getActivity(), models);
         swipeDeck.setAdapter(adapter);
         swipeDeck.setHardwareAccelerationEnabled(true);
+        swipeDeck.setLeftImage(R.id.left_image);
+        swipeDeck.setRightImage(R.id.right_image);
         swipeDeck.setEventCallback(new SwipeDeck.SwipeEventCallback() {
             @Override
             public void cardSwipedLeft(int position) {
