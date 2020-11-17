@@ -28,15 +28,18 @@ public class Matches {
         data.put("status", "pending");
         data.put("type", type);
         data.put("time", time);
-        db.child("matches").push().updateChildren(data);
         db.child("users").child(userProfile.getId()).child("matches").child(myProfile.getId()).setValue(type);
         db.child("users").child(myProfile.getId()).child("matches").child(userProfile.getId()).setValue(type);
 
 
-        new Chats().createContacts(myProfile, userProfile);
-
-
         if(type.equals("like")){
+            //Send match request
+            db.child("matches").push().updateChildren(data);
+
+            //create chat profile
+            new Chats().createContacts(myProfile, userProfile);
+
+            //send notification
             NotificationModel notificationModel = new NotificationModel();
             notificationModel.setTitle("New Love");
             notificationModel.setContent("Someone has just sent you a match request. Click to find out who they are.");
@@ -59,7 +62,7 @@ public class Matches {
                         SimpleDateFormat simpleDF = new SimpleDateFormat("yyyyMMddHHmmss");
                         String time = simpleDF.format(new Date());
                         dataSnapshot.getRef().child("time").setValue(time);
-                        new Chats().createContacts(sender, receiver);
+                        //new Chats().createContacts(sender, receiver);
                     }
                 }
             }
