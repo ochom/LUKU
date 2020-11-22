@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import androidx.annotation.NonNull;
@@ -62,7 +61,7 @@ public class ProfessionFragment extends Fragment {
                     btnContinue.setBackgroundResource(R.drawable.button_design_bg);
                     btnContinue.setEnabled(true);
                 }else{
-                    btnContinue.setBackgroundResource(R.drawable.disabled_button);
+                    btnContinue.setBackgroundResource(R.drawable.disabled_button_rounded);
                     btnContinue.setEnabled(false);
                 }
             }

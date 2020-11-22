@@ -55,8 +55,6 @@ public class MatchesFragment   extends Fragment {
         databaseReference = FirebaseDatabase.getInstance().getReference();
 
         GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 2);
-        //layoutManager.setReverseLayout(true);
-        //layoutManager.setStackFromEnd(true);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManager);
 

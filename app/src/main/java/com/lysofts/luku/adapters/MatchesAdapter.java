@@ -18,6 +18,7 @@ import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.lysofts.luku.MainActivity;
 import com.lysofts.luku.R;
 import com.lysofts.luku.ChatActivity;
 import com.lysofts.luku.constants.MyConstants;
@@ -59,7 +60,8 @@ public class MatchesAdapter extends RecyclerView.Adapter<MatchesAdapter.ViewHold
             intent.putExtra("image", match.getSender().getId().equals(mAuth.getUid())?match.getReceiver().getImage():match.getSender().getImage());
             intent.putExtra("name", match.getSender().getId().equals(mAuth.getUid())?match.getReceiver().getName():match.getSender().getName());
             intent.putExtra("title", match.getSender().getId().equals(mAuth.getUid())?match.getReceiver().getTitle():match.getSender().getTitle());
-            context.startActivity(intent);
+            // context.startActivity(intent);
+            ((MainActivity)context).openBottomSheet();
             }
         });
 

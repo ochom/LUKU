@@ -68,7 +68,7 @@
                 android:text="CONTINUE"
                 android:enabled="false"
                 android:textColor="#fff"
-                android:background="@drawable/disabled_button"
+                android:background="@drawable/disabled_button_rounded"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
         </LinearLayout>

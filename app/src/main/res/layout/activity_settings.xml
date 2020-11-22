@@ -184,7 +184,7 @@
                 android:layout_height="wrap_content"
                 android:text="Sign out"
                 android:layout_marginTop="30dp"
-                android:background="@drawable/disabled_button"/>
+                android:background="@drawable/disabled_button_rounded"/>
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

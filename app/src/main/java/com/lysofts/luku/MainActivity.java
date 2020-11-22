@@ -2,15 +2,20 @@ package com.lysofts.luku;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.firebase.auth.FirebaseAuth;
 import com.lysofts.luku.home_fragments.ChatsFragment;
 import com.lysofts.luku.home_fragments.HomeFragment;
@@ -23,6 +28,10 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     BottomNavigationView bottomNavigationView;
     Fragment fragment1, fragment2, fragment3, fragment4, activeFragment;
     FragmentManager fm;
+    ConstraintLayout bottomSheet;
+    BottomSheetBehavior bottomSheetBehavior;
+    Button btnCloseBottomSheet, btnOpenSubscriptions;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,6 +46,30 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
+
+        bottomSheet  = findViewById(R.id.bottomSheet);
+        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
+        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+
+        btnCloseBottomSheet = findViewById(R.id.close_bottom_sheet);
+        btnOpenSubscriptions = findViewById(R.id.open_subscriptions);
+        btnCloseBottomSheet.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (bottomSheetBehavior.getState()==BottomSheetBehavior.STATE_EXPANDED){
+                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+                }
+            }
+        });
+
+        btnOpenSubscriptions.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (bottomSheetBehavior.getState()==BottomSheetBehavior.STATE_EXPANDED){
+                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+                }
+            }
+        });
 
         if (savedInstanceState==null){
             activeFragment = fragment1;
@@ -124,5 +157,11 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 break;
         }
         return true;
+    }
+
+    public void openBottomSheet(){
+        if (bottomSheetBehavior.getState() != BottomSheetBehavior.STATE_EXPANDED){
+            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+        }
     }
 }
