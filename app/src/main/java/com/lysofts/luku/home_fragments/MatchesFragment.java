@@ -4,11 +4,13 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -23,6 +25,8 @@ import com.lysofts.luku.models.Match;
 import com.lysofts.luku.adapters.MatchesAdapter;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 public class MatchesFragment   extends Fragment {
@@ -50,9 +54,9 @@ public class MatchesFragment   extends Fragment {
         mAth = FirebaseAuth.getInstance();
         databaseReference = FirebaseDatabase.getInstance().getReference();
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
-        layoutManager.setReverseLayout(true);
-        layoutManager.setStackFromEnd(true);
+        GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 2);
+        //layoutManager.setReverseLayout(true);
+        //layoutManager.setStackFromEnd(true);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManager);
 
@@ -66,6 +70,7 @@ public class MatchesFragment   extends Fragment {
                         matches.add(match);
                     }
                 }
+                Collections.reverse(matches);
                 adapter = new MatchesAdapter(getActivity(), matches);
                 recyclerView.setAdapter(adapter);
                 if (matches.size()==0){

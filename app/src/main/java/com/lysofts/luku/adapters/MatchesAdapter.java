@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -65,7 +66,7 @@ public class MatchesAdapter extends RecyclerView.Adapter<MatchesAdapter.ViewHold
         holder.imgAction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-            Matches.confirmMatch(match.getSender().getId(), match.getReceiver().getId());
+           Matches.confirmMatch(match.getSender().getId(), match.getReceiver().getId());
             }
         });
     }
@@ -77,7 +78,8 @@ public class MatchesAdapter extends RecyclerView.Adapter<MatchesAdapter.ViewHold
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public View viewProfile;
-        public ImageView imgProfile, imgStatus, imgAction;
+        public ImageView imgProfile, imgStatus;
+        public LinearLayout imgAction;
         public TextView tvName, tvTitle, tvStatus;
 
         public ViewHolder(@NonNull View itemView) {
@@ -122,8 +124,12 @@ public class MatchesAdapter extends RecyclerView.Adapter<MatchesAdapter.ViewHold
             }else{
                 imgStatus.setImageResource(R.drawable.ic_baseline_favorite_24);
                 imgAction.setVisibility(View.GONE);
-                tvStatus.setText(R.string.match_status_matched);
                 tvStatus.setTextColor(Color.parseColor("#019207"));
+                if (!sender.getId().equals(mAuth.getUid())){
+                    tvStatus.setText(R.string.match_status_received_matched);
+                }else{
+                    tvStatus.setText(R.string.match_status_sent_matched);
+                }
             }
         }
     }
