@@ -352,7 +352,7 @@
                     android:layout_alignBottom="@+id/img_bg2"
                     android:gravity="center"
                     android:layout_marginTop="-5dp"
-                    android:text="20"
+                    android:text="0"
                     android:textColor="#ccc"
                     android:textSize="15sp" />
                 <TextView
@@ -399,7 +399,7 @@
                     android:layout_alignBottom="@+id/img_bg1"
                     android:gravity="center"
                     android:layout_marginTop="-5dp"
-                    android:text="20"
+                    android:text="0"
                     android:textColor="#ccc"
                     android:textSize="15sp" />
                 <TextView
@@ -445,7 +445,7 @@
                     android:layout_alignBottom="@+id/img_bg3"
                     android:gravity="center"
                     android:layout_marginTop="-5dp"
-                    android:text="20"
+                    android:text="0"
                     android:textColor="#ccc"
                     android:textSize="15sp" />
                 <TextView
@@ -456,7 +456,7 @@
                     android:layout_centerHorizontal="true"
                     android:fontFamily="cursive"
                     android:text="Matched"
-                    android:textColor="@color/colorPrimary"
+                    android:textColor="#005000"
                     android:textSize="13sp" />
             </RelativeLayout>
         </androidx.cardview.widget.CardView>
