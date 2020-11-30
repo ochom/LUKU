@@ -1,69 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#fff"
     android:orientation="vertical">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:background="@drawable/curved_top_nav">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:scaleType="fitXY"
-            android:onClick="closeActivity"
-            android:src="@drawable/ic_baseline_arrow_back_ios_24"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="10dp"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Settings"
-            android:textColor="#fff"
-            android:fontFamily="cursive"
-            android:textStyle="bold"
-            android:textSize="25sp"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="40dp"/>
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Save"
-            android:onClick="updateProfile"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:background="@android:color/transparent"
-            android:textColor="@color/white"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="10dp"/>
-    </RelativeLayout>
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/rounded_white"
-        android:layout_marginTop="-200dp">
+        android:background="@drawable/rounded_white">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingVertical="50dp"
+            android:paddingVertical="100dp"
             android:orientation="vertical"
-            android:paddingHorizontal="20dp">
+            android:paddingHorizontal="40dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
                 <TextView
+                    android:textColor="@android:color/black"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:fontFamily="cursive"
                     android:text="Name"/>
 
                 <EditText
@@ -83,6 +45,8 @@
                 android:layout_marginTop="20dp">
 
                 <TextView
+                    android:textColor="@android:color/black"
+                    android:fontFamily="cursive"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="About"/>
@@ -109,6 +73,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="I am a"
+                    android:fontFamily="cursive"
                     android:textColor="#000"
                     android:textSize="18sp"/>
                 <RadioGroup
@@ -143,6 +108,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="I am interested in"
+                    android:fontFamily="cursive"
                     android:textColor="#000"
                     android:textSize="18sp"/>
                 <RadioGroup
@@ -177,14 +143,17 @@
                         android:text="Any"/>
                 </RadioGroup>
             </LinearLayout>
-
-            <Button
-                android:id="@+id/btn_sign_out"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Sign out"
-                android:layout_marginTop="30dp"
-                android:background="@drawable/disabled_button_rounded"/>
         </LinearLayout>
     </ScrollView>
-</LinearLayout>
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:title="Preferences"
+        app:menu="@menu/preference_menu"
+        app:titleMarginStart="5dp"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

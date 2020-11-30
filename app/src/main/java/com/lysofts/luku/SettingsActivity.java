@@ -2,6 +2,8 @@ package com.lysofts.luku;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -10,6 +12,7 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
@@ -18,9 +21,7 @@ import com.lysofts.luku.local.MyProfile;
 import com.lysofts.luku.models.UserProfile;
 
 public class SettingsActivity extends AppCompatActivity {
-    Button btnSignOut;
     UserProfile userProfile;
-
     EditText txtName, txtTitle;
     RadioGroup genderRadio, interestedInRadio;
 
@@ -30,21 +31,42 @@ public class SettingsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_settings);
         userProfile = new MyProfile(this).getProfile();
 
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
         txtName = findViewById(R.id.txtName);
         txtTitle = findViewById(R.id.txtTitle);
         genderRadio = findViewById(R.id.gender_radio_group);
         interestedInRadio = findViewById(R.id.interested_in_radio_group);
 
         updateUI();
-        btnSignOut = findViewById(R.id.btn_sign_out);
-        btnSignOut.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                FirebaseAuth.getInstance().signOut();
-                new MyProfile(SettingsActivity.this).deleteProfile();
-                finishAffinity();
-            }
-        });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.preference_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (id){
+            case android.R.id.home:
+                finish();
+            return true;
+            case R.id.btn_sign_out:
+                SignOut();
+                break;
+            case R.id.btn_save:
+                updateProfile();
+                break;
+            default:
+                break;
+        }
+        return true;
     }
 
     private void updateUI() {
@@ -70,11 +92,7 @@ public class SettingsActivity extends AppCompatActivity {
         interestedInRadio.check(interestedInC);
     }
 
-    public void closeActivity(View view) {
-        finish();
-    }
-
-    public void updateProfile(View view) {
+    public void updateProfile() {
         ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setTitle("Updating profile");
         progressDialog.setMessage("Please wait...");
@@ -110,5 +128,11 @@ public class SettingsActivity extends AppCompatActivity {
             progressDialog.dismiss();
             finish();
         }
+    }
+
+    private void SignOut(){
+        FirebaseAuth.getInstance().signOut();
+        new MyProfile(SettingsActivity.this).deleteProfile();
+        finishAffinity();
     }
 }

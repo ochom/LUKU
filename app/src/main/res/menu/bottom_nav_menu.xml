@@ -3,8 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item android:id="@+id/nav_home"
-        android:title="Home"
-        android:icon="@drawable/ic_baseline_dashboard_24"
+        android:title="People"
+        android:icon="@drawable/ic_baseline_people_alt_24"
         app:showAsAction="always"/>
 
     <item android:id="@+id/nav_matches"

@@ -12,8 +12,10 @@
     <string name="match_status_received">received</string>
     <string name="match_status_received_matched">received, matched</string>
     <string name="match_status_sent_matched">sent, matched</string>
+    <string name="getting_people">Getting people ..</string>
     <string name="chats">Chats</string>
-    <string name="getting_chats">Getting chats...</string>
+    <string name="getting_chats">Getting chats ..</string>
     <string name="matches">Matches</string>
-    <string name="getting_matches">Getting matches...</string>
+    <string name="getting_matches">Getting matches ..</string>
+    <string name="getting_uploads">Getting uploads ..</string>
 </resources>

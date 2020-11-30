@@ -8,7 +8,7 @@ import androidx.annotation.Nullable;
 import com.github.chrisbanes.photoview.PhotoView;
 import com.squareup.picasso.Picasso;
 
-public class PhotoviewerActivity extends Activity {
+public class PhotoViewerActivity extends Activity {
     PhotoView imaveView;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

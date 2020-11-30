@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F5F5F5">
+    android:background="#FFFFFF">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -44,14 +44,14 @@
                         android:layout_height="wrap_content"
                         android:text="Lu"
                         android:textStyle="bold"
-                        android:textColor="#BCE91E63"
+                        android:textColor="@color/colorPrimary"
                         android:textSize="25dp" />
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Ku"
                         android:textStyle="bold"
-                        android:textColor="#B4F40202"
+                        android:textColor="@color/colorPrimaryDark"
                         android:textSize="25dp" />
 
                 </LinearLayout>

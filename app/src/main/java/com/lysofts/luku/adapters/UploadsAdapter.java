@@ -23,7 +23,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.lysofts.luku.PhotoviewerActivity;
+import com.lysofts.luku.PhotoViewerActivity;
 import com.lysofts.luku.R;
 import com.lysofts.luku.models.Upload;
 import com.squareup.picasso.Picasso;
@@ -59,7 +59,7 @@ public class UploadsAdapter extends RecyclerView.Adapter<UploadsAdapter.ViewHold
         holder.child.setOnClickListener((new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(context, PhotoviewerActivity.class);
+                Intent intent = new Intent(context, PhotoViewerActivity.class);
                 intent.putExtra("imageUrl", uploadList.get(position).getImage());
                 context.startActivity(intent);
             }

@@ -78,7 +78,8 @@ public class ChatsFragment  extends Fragment {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                tvLoading.setVisibility(View.VISIBLE);
+                tvLoading.setText("Error occurred while loading chats.");
             }
         });
     }
