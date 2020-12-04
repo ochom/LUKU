@@ -29,9 +29,10 @@
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat" />
         <activity android:name=".PhotoViewerActivity" />
-        <activity android:name=".SettingsActivity"/>
-        <activity android:name=".UploadsActivity"/>
+        <activity android:name=".SettingsActivity" />
+        <activity android:name=".UploadsActivity" />
         <activity android:name=".ChatActivity" />
+        <activity android:name=".SubscriptionActivity" android:parentActivityName=".MainActivity"/>
         <activity android:name=".Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

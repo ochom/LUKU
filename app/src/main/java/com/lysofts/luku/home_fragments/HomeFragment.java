@@ -7,6 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -40,10 +42,11 @@ public class HomeFragment  extends Fragment {
 
     TextView tvLoading;
     ImageButton btnLike, btnDislike;
+    ImageView image_blank_page;
+    RelativeLayout noDataView;
 
     SwipeDeck swipeDeck;
 
-    String TAG = "LUKU>>> ";
     UserProfile myProfile;
 
     @Nullable
@@ -51,7 +54,10 @@ public class HomeFragment  extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_home, container, false);
         swipeDeck = v.findViewById(R.id.swipe_deck);
+
         tvLoading = v.findViewById(R.id.tvLoading);
+        noDataView = v.findViewById(R.id.noDataView);
+        image_blank_page = v.findViewById(R.id.image_blank_page);
         btnLike = v.findViewById(R.id.btnLike);
         btnDislike = v.findViewById(R.id.btnDislike);
         return v;
@@ -66,6 +72,7 @@ public class HomeFragment  extends Fragment {
 
         btnLike.setVisibility(View.GONE);
         btnDislike.setVisibility(View.GONE);
+        image_blank_page.setVisibility(View.GONE);
         getAUser();
 
         btnLike.setOnClickListener(new View.OnClickListener() {
@@ -84,7 +91,7 @@ public class HomeFragment  extends Fragment {
     }
 
     private void getAUser() {
-        databaseReference.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
+        databaseReference.child("users").addValueEventListener(new ValueEventListener() {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -141,11 +148,13 @@ public class HomeFragment  extends Fragment {
                 }
 
                 if (models.size()==0){
-                    tvLoading.setVisibility(View.VISIBLE);
-                    tvLoading.setText("No new people of your Taste.");
+                    noDataView.setVisibility(View.VISIBLE);
+                    tvLoading.setVisibility(View.GONE);
                     btnLike.setVisibility(View.GONE);
                     btnDislike.setVisibility(View.GONE);
+                    image_blank_page.setVisibility(View.VISIBLE);
                 }else{
+                    noDataView.setVisibility(View.GONE);
                     tvLoading.setVisibility(View.GONE);
                     btnLike.setVisibility(View.VISIBLE);
                     btnDislike.setVisibility(View.VISIBLE);

@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     Fragment fragment1, fragment2, fragment3, fragment4, activeFragment;
     FragmentManager fm;
     ConstraintLayout bottomSheet;
-    BottomSheetBehavior bottomSheetBehavior;
+    BottomSheetBehavior<ConstraintLayout> bottomSheetBehavior;
     Button btnCloseBottomSheet, btnOpenSubscriptions;
 
     @Override
@@ -48,8 +48,18 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
 
         bottomSheet  = findViewById(R.id.bottomSheet);
+
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+
+        bottomSheet.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (bottomSheetBehavior.getState()==BottomSheetBehavior.STATE_EXPANDED){
+                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+                }
+            }
+        });
 
         btnCloseBottomSheet = findViewById(R.id.close_bottom_sheet);
         btnOpenSubscriptions = findViewById(R.id.open_subscriptions);
@@ -65,9 +75,10 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         btnOpenSubscriptions.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (bottomSheetBehavior.getState()==BottomSheetBehavior.STATE_EXPANDED){
-                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-                }
+//                if (bottomSheetBehavior.getState()==BottomSheetBehavior.STATE_EXPANDED){
+//                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+//                }
+                startActivity(new Intent(MainActivity.this, SubscriptionActivity.class));
             }
         });
 
