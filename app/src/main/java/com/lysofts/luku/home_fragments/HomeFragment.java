@@ -194,7 +194,7 @@ public class HomeFragment  extends Fragment {
             public void cardsDepleted() {
                 Log.i("MainActivity", "no more cards");
                 tvLoading.setVisibility(View.VISIBLE);
-                tvLoading.setText("No more people of your Taste.");
+                //tvLoading.setText("No more people of your Taste.");
                 btnLike.setVisibility(View.GONE);
                 btnDislike.setVisibility(View.GONE);
             }

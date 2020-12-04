@@ -145,7 +145,7 @@ public class SwipeDeckAdapter extends BaseAdapter {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 int claps = snapshot.child("claps").getValue(Integer.class);
-                snapshot.child("claps").getRef().setValue(claps+1);
+                //snapshot.child("claps").getRef().setValue(claps+1);
             }
 
             @Override
