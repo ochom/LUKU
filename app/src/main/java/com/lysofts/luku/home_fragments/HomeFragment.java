@@ -91,7 +91,7 @@ public class HomeFragment  extends Fragment {
     }
 
     private void getAUser() {
-        databaseReference.child("users").addValueEventListener(new ValueEventListener() {
+        databaseReference.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -105,14 +105,14 @@ public class HomeFragment  extends Fragment {
                     List<Upload> uploads = new ArrayList<>();
                     Map<String, String> matches = new HashMap<>();
 
-                    if (snapshot1.child("uploads") != null){
+                    if (snapshot1.hasChild("uploads")){
                         for (DataSnapshot snapshot2:snapshot1.child("uploads").getChildren()){
                             Upload upload = snapshot2.getValue(Upload.class);
                             uploads.add(upload);
                         }
                     }
 
-                    if (snapshot1.child("matches") != null){
+                    if (snapshot1.hasChild("matches")){
                         for (DataSnapshot snapshot2:snapshot1.child("matches").getChildren()){
                             matches.put(snapshot2.getKey(), snapshot2.getValue(String.class));
                         }
@@ -182,12 +182,14 @@ public class HomeFragment  extends Fragment {
             public void cardSwipedLeft(int position) {
                 Log.i("MainActivity", "card was swiped left, position in adapter: " + position);
                 Matches.sendMatchRequest(new MyProfile(getActivity()).getProfile(), models.get(position).getUser(), "like");
+                getAUser();
             }
 
             @Override
             public void cardSwipedRight(int position) {
                 Log.i("MainActivity", "card was swiped right, position in adapter: " + position);
                 Matches.sendMatchRequest(new MyProfile(getActivity()).getProfile(), models.get(position).getUser(), "dislike");
+                getAUser();
             }
 
             @Override

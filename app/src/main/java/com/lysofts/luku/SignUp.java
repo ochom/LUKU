@@ -106,16 +106,6 @@ public class SignUp extends AppCompatActivity {
         }
     }
 
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-//        for (Fragment fragment : getSupportFragmentManager().getFragments()) {
-//            fragment.onActivityResult(requestCode, resultCode, data);
-//        }
-//        super.onActivityResult(requestCode, resultCode, data);
-//    }
-
-
-
     public void signInWithPhone(String phoneNumber) {
         this.phone = phoneNumber;
 //        phone = "797969142";
@@ -129,7 +119,6 @@ public class SignUp extends AppCompatActivity {
             progressDialog.show();
         }
         phone = "+254"+phone;
-        Log.d(TAG, phone.equals("+254797969142")?"TRUE":"FALSE");
         PhoneAuthOptions options =
                 PhoneAuthOptions.newBuilder(mAuth)
                         .setPhoneNumber(phone)
@@ -199,7 +188,6 @@ public class SignUp extends AppCompatActivity {
             public void onCodeAutoRetrievalTimeOut(@NonNull String s) {
                 super.onCodeAutoRetrievalTimeOut(s);
                 Toast.makeText(SignUp.this, "Code auto retrieval failed", Toast.LENGTH_SHORT).show();
-                //loadFragment(new SignInFragment());
                 if (progressDialog.isShowing()){
                     progressDialog.dismiss();
                 }
