@@ -1,11 +1,13 @@
 package com.lysofts.luku.home_fragments;
 
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -44,6 +46,7 @@ public class HomeFragment  extends Fragment {
     ImageButton btnLike, btnDislike;
     ImageView image_blank_page;
     RelativeLayout noDataView;
+    Button btnInvite;
 
     SwipeDeck swipeDeck;
 
@@ -60,6 +63,7 @@ public class HomeFragment  extends Fragment {
         image_blank_page = v.findViewById(R.id.image_blank_page);
         btnLike = v.findViewById(R.id.btnLike);
         btnDislike = v.findViewById(R.id.btnDislike);
+        btnInvite = v.findViewById(R.id.btn_invite);
         return v;
     }
 
@@ -86,6 +90,17 @@ public class HomeFragment  extends Fragment {
             @Override
             public void onClick(View view) {
                 swipeDeck.swipeTopCardRight(2000);
+            }
+        });
+        btnInvite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent();
+                intent.setAction(Intent.ACTION_SEND);
+                intent.putExtra(Intent.EXTRA_TEXT,"Hi, Do you want to meet new people, download the Luku app here: \nhttps://lysofts.co.ke\nAnd start meeting new people.");
+                intent.setType("text/plain");
+                Intent shareIntent = Intent.createChooser(intent, null);
+                startActivity(shareIntent);
             }
         });
     }
