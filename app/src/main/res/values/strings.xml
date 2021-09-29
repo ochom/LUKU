@@ -2,8 +2,8 @@
     <string name="app_name">Luku</string>
     <string name="terms_policy"><u>Terms and Privacy Policy</u></string>
 
-    <string name="facebook_app_id">694535984638837</string>
-    <string name="fb_login_protocol_scheme">fb694535984638837</string>
+    <string name="facebook_app_id"></string>
+    <string name="fb_login_protocol_scheme"></string>
 
     <string name="gps_network_not_enabled">Location setting not enabled</string>
     <string name="open_location_settings">Open location settings</string>
